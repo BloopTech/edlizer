@@ -1,0 +1,97 @@
+"use client";
+
+import React from "react";
+import { Star, Quote, CheckCircle2 } from "lucide-react";
+
+export const testimonialsData = [
+  {
+    author: "Marilyn",
+    rating: 5,
+    role: "Verified Beauty Enthusiast • Accra",
+    quote:
+      "Edlizer is a one-stop shop for me. I get everything from skincare to makeup in one place. It saves me so much time and hassle.",
+    avatar:
+      "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=300&auto=format&fit=crop",
+    purchased: "NARS Foundation & Simple Toner",
+  },
+  {
+    author: "Maame",
+    rating: 5,
+    role: "Loyal Client • Kumasi",
+    quote:
+      "I am quite particular about shopping online, So when I tried out Edlizer and realized how quality her products were, I never shop anywhere else.",
+    avatar:
+      "https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=300&auto=format&fit=crop",
+    purchased: "Good Molecules Discoloration Serum",
+  },
+];
+
+export const TestimonialsSection: React.FC = () => {
+  return (
+    <section id="testimonials" className="py-20 bg-[#f7f4ee] border-b border-[#e6e0d3]">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Header */}
+        <div className="text-center max-w-2xl mx-auto mb-16 space-y-3">
+          <div className="rs-eyebrow justify-center text-[#C58E2A]">
+            Real Experiences & Reviews
+          </div>
+          <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-normal text-[#171512] leading-tight">
+            Testimonials — What Our Clients Say!
+          </h2>
+          <p className="text-base text-[#6f6a60] font-light">
+            Discover why beauty lovers across Ghana trust Edlizer Beauty for 100% authentic international cosmetics and skincare.
+          </p>
+        </div>
+
+        {/* 2 Testimonial Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+          {testimonialsData.map((t, idx) => (
+            <div
+              key={idx}
+              className="bg-white rounded-3xl p-8 sm:p-10 border border-[#e6e0d3] shadow-md flex flex-col justify-between relative group hover:border-[#C58E2A]/60 transition-all duration-300"
+            >
+              <div className="space-y-4">
+                {/* 5 Stars Rating */}
+                <div className="flex items-center justify-between">
+                  <div className="flex text-[#eea431] gap-1">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} className="w-4 h-4 fill-current" />
+                    ))}
+                  </div>
+                  <span className="text-xs font-bold text-[#C58E2A] uppercase tracking-wider">
+                    5.0 / 5.0
+                  </span>
+                </div>
+
+                {/* Quote Text */}
+                <p className="font-display text-lg sm:text-xl text-[#171512] font-normal leading-relaxed italic">
+                  "{t.quote}"
+                </p>
+              </div>
+
+              {/* Author Info */}
+              <div className="pt-6 mt-6 border-t border-[#e6e0d3] flex items-center gap-4">
+                <img
+                  src={t.avatar}
+                  alt={t.author}
+                  className="w-12 h-12 rounded-full object-cover ring-2 ring-[#e6e0d3]"
+                />
+                <div>
+                  <div className="flex items-center gap-2">
+                    <h4 className="font-display font-semibold text-base text-[#171512]">
+                      {t.author}
+                    </h4>
+                    <span className="inline-flex items-center gap-1 text-[10px] text-[#2f8f5c] font-semibold bg-[#f7f4ee] px-2 py-0.5 rounded-full">
+                      <CheckCircle2 className="w-3 h-3" /> Verified Buyer
+                    </span>
+                  </div>
+                  <div className="text-xs text-[#6f6a60]">{t.role}</div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+};
