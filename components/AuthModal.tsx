@@ -60,8 +60,10 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
           setSuccessMsg("Password reset email sent! Check your inbox.");
         }
       }
-    } catch (err: any) {
-      setErrorMsg(err.message || "An unexpected error occurred.");
+    } catch (err: unknown) {
+      setErrorMsg(
+        err instanceof Error ? err.message : "An unexpected error occurred."
+      );
     } finally {
       setLoading(false);
     }
@@ -133,7 +135,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
               <div className="space-y-2 text-xs text-[#6f6a60]">
                 <div className="flex justify-between py-2 border-b border-[#e6e0d3]/60">
                   <span>User ID</span>
-                  <span className="font-mono text-[#171512]">{user.id.slice(0, 12)}...</span>
+                  <span className="font-sans tabular-nums text-[#171512]">{user.id.slice(0, 12)}...</span>
                 </div>
                 <div className="flex justify-between py-2 border-b border-[#e6e0d3]/60">
                   <span>Last Signed In</span>

@@ -84,10 +84,6 @@ body {
   font-family: 'Satoshi', sans-serif;
 }
 
-.font-body {
-  font-family: var(--font-jost), sans-serif;
-}
-
 /* Glassmorphism utilities */
 .glass-panel {
   background: rgba(255, 255, 255, 0.82);
@@ -160,4 +156,205 @@ body {
 }
 ::-webkit-scrollbar-thumb:hover {
   background: var(--ink-400);
+}
+
+/* ============================================================
+   Hero — cinematic campaign motion
+   Restrained, slow easing; every animation uses fill-mode both so
+   elements never flash in at full opacity before their delay starts.
+   ============================================================ */
+
+@keyframes heroRise {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 22px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes heroFade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Barely-there drift on the campaign photographs: reads as breath, not zoom.
+   It alternates forever so every slide in the rotation keeps the same life —
+   a one-shot would leave the later frames sitting perfectly still. */
+@keyframes heroDrift {
+  from { transform: scale(1.045) translate3d(0.6%, 0, 0); }
+  to { transform: scale(1.0) translate3d(0, 0, 0); }
+}
+
+@keyframes scrollCue {
+  0%   { transform: scaleY(0); transform-origin: top; opacity: 0; }
+  35%  { transform: scaleY(1); transform-origin: top; opacity: 1; }
+  65%  { transform: scaleY(1); transform-origin: bottom; opacity: 1; }
+  100% { transform: scaleY(0); transform-origin: bottom; opacity: 0; }
+}
+
+/* Slow light sweep across the gold CTA — only on hover, only once per pass. */
+@keyframes goldSheen {
+  from { transform: translateX(-120%) skewX(-18deg); }
+  to   { transform: translateX(220%) skewX(-18deg); }
+}
+
+.hero-rise {
+  opacity: 0;
+  animation: heroRise 1100ms cubic-bezier(0.22, 0.61, 0.36, 1) both;
+}
+
+.hero-fade {
+  opacity: 0;
+  animation: heroFade 1400ms cubic-bezier(0.33, 0.9, 0.42, 1) both;
+}
+
+.hero-drift {
+  animation: heroDrift 26s cubic-bezier(0.37, 0, 0.63, 1) infinite alternate both;
+  will-change: transform;
+}
+
+.hero-scroll-cue {
+  animation: scrollCue 2600ms cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+
+.gold-sheen::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 38%;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.42) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  transform: translateX(-120%) skewX(-18deg);
+  opacity: 0;
+}
+
+.gold-sheen:hover::after {
+  opacity: 1;
+  animation: goldSheen 900ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-rise,
+  .hero-fade,
+  .hero-drift,
+  .hero-scroll-cue,
+  .gold-sheen:hover::after {
+    animation: none !important;
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ============================================================
+   Brand marquee — continuous logo loop
+   The track holds two identical copies of the brand list and slides
+   exactly one copy's width, so the seam is invisible and the loop
+   never resets visibly.
+   ============================================================ */
+
+@keyframes brandMarquee {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(-50%, 0, 0); }
+}
+
+.brand-marquee-track {
+  animation: brandMarquee var(--marquee-duration, 48s) linear infinite;
+  will-change: transform;
+}
+
+.brand-marquee:hover .brand-marquee-track {
+  animation-play-state: paused;
+}
+
+/* Soft edges so logos enter and leave the strip rather than being clipped */
+.brand-marquee-mask {
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    #000 6rem,
+    #000 calc(100% - 6rem),
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    #000 6rem,
+    #000 calc(100% - 6rem),
+    transparent 100%
+  );
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .brand-marquee-track {
+    animation: none;
+    transform: none;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* ============================================================
+   Hero headline — per-word reveal
+   Each word rises and unblurs on its own delay, so a headline change
+   reads as a line being written rather than a block swapping out.
+   ============================================================ */
+
+@keyframes wordRise {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 0.7em, 0);
+    filter: blur(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+    filter: blur(0);
+  }
+}
+
+.word-rise {
+  display: inline-block;
+  opacity: 0;
+  animation: wordRise 900ms cubic-bezier(0.22, 0.61, 0.36, 1) both;
+  /* A clipped line would shear descenders, so the reveal is opacity + blur. */
+  will-change: transform, opacity, filter;
+}
+
+/* The eyebrow rule that draws itself out beside the kicker. */
+@keyframes ruleDraw {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+.rule-draw {
+  transform-origin: left;
+  animation: ruleDraw 900ms cubic-bezier(0.22, 0.61, 0.36, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .word-rise,
+  .rule-draw {
+    animation: none !important;
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
 }

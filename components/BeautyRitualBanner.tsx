@@ -6,53 +6,53 @@ import { Sparkles, ArrowRight, Eye, X } from "lucide-react";
 
 export const galleryImages = [
   {
-    url: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?q=80&w=800&auto=format&fit=crop",
-    title: "Golden Hour Radiance",
+    url: "/assets/products/nars-radiant-foundation/1.jpg",
+    title: "NARS Radiant Foundation",
     tag: "@edlizer_beauty_outlet",
   },
   {
-    url: "https://images.unsplash.com/photo-1540555700478-4be289fbecef?q=80&w=800&auto=format&fit=crop",
-    title: "Effortless Complexion",
+    url: "/assets/products/beauty-creations-setting-powder/1.jpg",
+    title: "Bye Filter Setting Powder",
     tag: "NARS & Fenty Glow",
   },
   {
-    url: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?q=80&w=800&auto=format&fit=crop",
-    title: "Pure Botanical Drops",
+    url: "/assets/products/good-molecules-discoloration-serum/1.webp",
+    title: "Discoloration Correcting Serum",
     tag: "Good Molecules Serum",
   },
   {
-    url: "https://images.unsplash.com/photo-1596462502278-27bfdc403348?q=80&w=800&auto=format&fit=crop",
-    title: "Precision Artistry Brushes",
+    url: "/assets/products/studio-london-brush-set/1.png",
+    title: "Ultimate Brush Collection",
     tag: "Vanity Essentials",
   },
   {
-    url: "https://images.unsplash.com/photo-1512290900672-1f02e604f8dd?q=80&w=800&auto=format&fit=crop",
-    title: "Velvet Matte Finish",
+    url: "/assets/products/nyx-lip-lingerie-ruffle-trim/1.webp",
+    title: "Lip Lingerie Liquid Lipstick",
     tag: "Setting Powder Magic",
   },
   {
-    url: "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?q=80&w=800&auto=format&fit=crop",
-    title: "Morning Skin Awakening",
+    url: "/assets/products/simple-soothing-facial-toner/1.jpg",
+    title: "Soothing Facial Toner",
     tag: "Hydration Ritual",
   },
   {
-    url: "https://images.unsplash.com/photo-1586495777744-4413f21062fa?q=80&w=800&auto=format&fit=crop",
-    title: "High-Pigment Lip Stains",
+    url: "/assets/products/nickak-4in1-lip-kit/1.webp",
+    title: "NicKak 4in1 Lip Kit",
     tag: "Plump & Nourish",
   },
   {
-    url: "https://images.unsplash.com/photo-1535585209827-a15fcdbc4c2d?q=80&w=800&auto=format&fit=crop",
-    title: "Calm & Soothed Tone",
+    url: "/assets/products/cosrx-aloe-suncream/1.jpg",
+    title: "Aloe Soothing Sun Cream",
     tag: "Simple Toner Gentle Care",
   },
   {
-    url: "https://images.unsplash.com/photo-1608248597359-00994d4d1685?q=80&w=800&auto=format&fit=crop",
-    title: "Liquid Gold Alchemy",
+    url: "/assets/products/ginseng-essence-water/1.jpg",
+    title: "Ginseng Essence Water",
     tag: "Skin Barrier Restored",
   },
   {
-    url: "https://images.unsplash.com/photo-1556228720-195a672e8a03?q=80&w=800&auto=format&fit=crop",
-    title: "Glowing Self-Expression",
+    url: "/assets/products/good-molecules-clarify-cleanse-bar/1.jpeg",
+    title: "Clarify & Cleanse Bar",
     tag: "#BeWhoeverYouWant",
   },
 ];
@@ -85,10 +85,10 @@ export const BeautyRitualBanner: React.FC = () => {
 
             <div className="pt-2 flex flex-wrap items-center gap-4">
               <Link
-                href="#shop-all"
+                href="/beauty-ritual"
                 className="bg-[#C58E2A] hover:bg-[#E3B358] text-[#171512] font-semibold text-xs sm:text-sm uppercase tracking-[0.14em] px-8 py-4 rounded-full transition-all shadow-lg flex items-center gap-2 group"
               >
-                <span>Shop Products</span>
+                <span>Explore The Ritual</span>
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </Link>
 

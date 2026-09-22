@@ -10,8 +10,6 @@ export const testimonialsData = [
     role: "Verified Beauty Enthusiast • Accra",
     quote:
       "Edlizer is a one-stop shop for me. I get everything from skincare to makeup in one place. It saves me so much time and hassle.",
-    avatar:
-      "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=300&auto=format&fit=crop",
     purchased: "NARS Foundation & Simple Toner",
   },
   {
@@ -20,8 +18,6 @@ export const testimonialsData = [
     role: "Loyal Client • Kumasi",
     quote:
       "I am quite particular about shopping online, So when I tried out Edlizer and realized how quality her products were, I never shop anywhere else.",
-    avatar:
-      "https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=300&auto=format&fit=crop",
     purchased: "Good Molecules Discoloration Serum",
   },
 ];
@@ -65,17 +61,18 @@ export const TestimonialsSection: React.FC = () => {
 
                 {/* Quote Text */}
                 <p className="font-display text-lg sm:text-xl text-[#171512] font-normal leading-relaxed italic">
-                  "{t.quote}"
+                  &ldquo;{t.quote}&rdquo;
                 </p>
               </div>
 
               {/* Author Info */}
               <div className="pt-6 mt-6 border-t border-[#e6e0d3] flex items-center gap-4">
-                <img
-                  src={t.avatar}
-                  alt={t.author}
-                  className="w-12 h-12 rounded-full object-cover ring-2 ring-[#e6e0d3]"
-                />
+                <div
+                  aria-hidden
+                  className="w-12 h-12 shrink-0 rounded-full bg-[#171512] text-[#E3B358] font-display text-lg flex items-center justify-center ring-2 ring-[#e6e0d3]"
+                >
+                  {t.author.charAt(0).toUpperCase()}
+                </div>
                 <div>
                   <div className="flex items-center gap-2">
                     <h4 className="font-display font-semibold text-base text-[#171512]">

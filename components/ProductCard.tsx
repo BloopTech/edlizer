@@ -6,11 +6,17 @@ import { Star, Eye, Heart, ArrowLeftRight, Check, ShoppingBag, Flame } from "luc
 export interface Product {
   id: string;
   name: string;
+  /** Primary department, shown as the card eyebrow. */
   category: string;
+  /** Every department this product is filed under (WooCommerce allows several). */
+  categories?: string[];
+  /** House that makes it, used by the shop brand filter. */
+  brand?: string;
   price: number;
   originalPrice?: number;
-  rating: number;
-  reviewCount: number;
+  /** Optional: real catalogue items carry no review data until customers leave it. */
+  rating?: number;
+  reviewCount?: number;
   stockCount: number;
   isBestSeller?: boolean;
   isFlashDeal?: boolean;
@@ -18,6 +24,8 @@ export interface Product {
   discountBadge?: string;
   image: string;
   hoverImage?: string;
+  /** Extra shots shown as thumbnails in quick view. */
+  gallery?: string[];
   description?: string;
   sizes?: string[];
 }
@@ -55,10 +63,20 @@ export const ProductCard: React.FC<ProductCardProps> = ({
     >
       {/* Product Image Media Container */}
       <div className="relative aspect-square w-full bg-[#efe9de] overflow-hidden flex items-center justify-center p-6">
+        {/*
+          The photograph itself opens quick view. On touch there is no hover to
+          reveal the eye button, so the image has to be the target.
+        */}
+        <button
+          type="button"
+          onClick={() => onQuickView?.(product)}
+          aria-label={`Quick view: ${product.name}`}
+          className="absolute inset-0 z-[5] cursor-pointer"
+        />
         <img
           src={isHovered && product.hoverImage ? product.hoverImage : product.image}
           alt={product.name}
-          className="w-full h-full object-contain object-center transition-transform duration-500 group-hover:scale-105"
+          className="w-full h-full object-contain object-center transition-transform duration-500 group-hover:scale-105 pointer-events-none"
           loading="lazy"
         />
 
@@ -164,29 +182,32 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             {product.name}
           </h3>
 
-          {/* Rating */}
-          <div className="flex items-center gap-1.5 mt-2">
-            <div className="flex text-[#eea431]">
-              {[...Array(5)].map((_, i) => (
-                <Star
-                  key={i}
-                  className={`w-3.5 h-3.5 ${
-                    i < Math.floor(product.rating)
-                      ? "fill-current"
-                      : "text-[#e6e0d3]"
-                  }`}
-                />
-              ))}
+          {/* Rating — omitted entirely when the product has no reviews yet */}
+          {typeof product.rating === "number" && (
+            <div className="flex items-center gap-1.5 mt-2">
+              <div className="flex text-[#eea431]">
+                {[...Array(5)].map((_, i) => (
+                  <Star
+                    key={i}
+                    className={`w-3.5 h-3.5 ${
+                      i < Math.floor(product.rating!)
+                        ? "fill-current"
+                        : "text-[#e6e0d3]"
+                    }`}
+                  />
+                ))}
+              </div>
+              <span className="text-xs text-[#6f6a60] font-sans">
+                {product.rating.toFixed(1)}
+                {product.reviewCount ? ` (${product.reviewCount})` : ""}
+              </span>
             </div>
-            <span className="text-xs text-[#6f6a60] font-sans">
-              {product.rating.toFixed(1)} ({product.reviewCount})
-            </span>
-          </div>
+          )}
         </div>
 
         {/* Pricing & Stock Availability */}
-        <div className="pt-2 border-t border-[#e6e0d3]/60 flex items-center justify-between">
-          <div className="flex items-baseline gap-2">
+        <div className="pt-2 border-t border-[#e6e0d3]/60 flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-baseline gap-2 whitespace-nowrap">
             <span
               className={`font-semibold text-base font-sans ${
                 product.originalPrice ? "text-[#d0263c]" : "text-[#201c17]"
@@ -202,7 +223,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           </div>
 
           {/* Availability Indicator */}
-          <div className="flex items-center gap-1.5 text-xs text-[#6f6a60]">
+          <div className="flex items-center gap-1.5 text-xs text-[#6f6a60] whitespace-nowrap">
             <span
               className={`w-1.5 h-1.5 rounded-full ${
                 product.stockCount > 0 ? "bg-[#2f8f5c]" : "bg-[#c72f5e]"

@@ -25,7 +25,14 @@ interface QuickViewModalProps {
   isWishlisted?: boolean;
 }
 
-export const QuickViewModal: React.FC<QuickViewModalProps> = ({
+/**
+ * The dialog itself. Split out from the exported wrapper so its hooks are never
+ * called conditionally — the wrapper does the "is there a product?" check, and
+ * this only ever renders with one.
+ */
+const QuickViewDialog: React.FC<
+  Omit<QuickViewModalProps, "product"> & { product: Product }
+> = ({
   product,
   onClose,
   onAddToCart,
@@ -33,21 +40,17 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
   onToggleWishlist,
   isWishlisted = false,
 }) => {
-  if (!product) return null;
-
   const [selectedSize, setSelectedSize] = useState<string>(
-    product.sizes?.[0] || "30ml"
+    product.sizes?.[0] ?? "Standard"
   );
   const [quantity, setQuantity] = useState<number>(1);
   const [selectedImage, setSelectedImage] = useState<string>(product.image);
 
-  const images = [
-    product.image,
-    product.hoverImage ||
-      "https://images.unsplash.com/photo-1608248597359-00994d4d1685?q=80&w=800&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?q=80&w=800&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1556228720-195a672e8a03?q=80&w=800&auto=format&fit=crop",
-  ];
+  // The product's own photography — no filler. Duplicates are dropped so a
+  // product whose gallery repeats its cover shot shows one thumbnail, not two.
+  const images = Array.from(
+    new Set([product.image, ...(product.gallery ?? []), product.hoverImage].filter(Boolean))
+  ) as string[];
 
   const handleDec = () => {
     if (quantity > 1) setQuantity(quantity - 1);
@@ -78,8 +81,8 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
           <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
             {/* Gallery Left (Thumbnails + Main Image) */}
             <div className="md:col-span-6 flex gap-4">
-              {/* Thumbnail column */}
-              <div className="flex flex-col gap-2.5 shrink-0">
+              {/* Thumbnail column — only when there is more than one shot */}
+              <div className={`flex-col gap-2.5 shrink-0 ${images.length > 1 ? "flex" : "hidden"}`}>
                 {images.map((img, idx) => (
                   <button
                     key={idx}
@@ -92,8 +95,8 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
                   >
                     <img
                       src={img}
-                      alt={`Thumbnail ${idx}`}
-                      className="w-full h-full object-cover"
+                      alt={`${product.name} — view ${idx + 1}`}
+                      className="w-full h-full object-contain p-1"
                     />
                   </button>
                 ))}
@@ -120,25 +123,36 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
                 <span className="text-[#171512] truncate">{product.category}</span>
               </div>
 
-              {/* Rating */}
-              <div className="flex items-center gap-2">
-                <div className="flex text-[#eea431]">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="w-3.5 h-3.5 fill-current" />
-                  ))}
+              {/* Rating — shown only where genuine review data exists */}
+              {typeof product.rating === "number" && (
+                <div className="flex items-center gap-2">
+                  <div className="flex text-[#eea431]">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} className="w-3.5 h-3.5 fill-current" />
+                    ))}
+                  </div>
+                  <span className="text-xs text-[#201c17] font-semibold">
+                    {product.rating.toFixed(1)} / 5.0
+                  </span>
+                  {product.reviewCount ? (
+                    <span className="text-xs text-[#6f6a60]">
+                      ({product.reviewCount} reviews)
+                    </span>
+                  ) : null}
                 </div>
-                <span className="text-xs text-[#201c17] font-semibold">
-                  {product.rating.toFixed(1)} / 5.0
-                </span>
-                <span className="text-xs text-[#6f6a60]">
-                  ({product.reviewCount} reviews)
-                </span>
-              </div>
+              )}
 
               {/* Title */}
               <h2 className="font-display text-2xl sm:text-3xl font-normal text-[#171512]">
                 {product.name}
               </h2>
+
+              {/* Description */}
+              {product.description && (
+                <p className="text-[14px] text-[#6f6a60] font-light leading-[1.75]">
+                  {product.description}
+                </p>
+              )}
 
               {/* Key Benefits */}
               <div className="flex flex-wrap items-center gap-4 text-xs font-medium text-[#201c17]">
@@ -188,13 +202,14 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
                 </div>
               </div>
 
-              {/* Size Selector */}
+              {/* Size Selector — only for products that actually have variants */}
+              {product.sizes && product.sizes.length > 0 && (
               <div>
                 <label className="text-xs font-semibold uppercase tracking-wider text-[#6f6a60] block mb-2">
                   Size: <span className="text-[#171512]">{selectedSize}</span>
                 </label>
                 <div className="flex gap-2">
-                  {(product.sizes || ["30ml", "50ml", "75ml"]).map((size) => (
+                  {product.sizes.map((size) => (
                     <button
                       key={size}
                       onClick={() => setSelectedSize(size)}
@@ -209,6 +224,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
                   ))}
                 </div>
               </div>
+              )}
 
               {/* Quantity & CTA Buttons */}
               <div className="space-y-3 pt-2">
@@ -298,4 +314,9 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
       </div>
     </div>
   );
+};
+
+export const QuickViewModal: React.FC<QuickViewModalProps> = (props) => {
+  if (!props.product) return null;
+  return <QuickViewDialog {...props} product={props.product} />;
 };

@@ -150,27 +150,27 @@ export const Footer: React.FC = () => {
             </h4>
             <ul className="space-y-2.5 text-xs tracking-wider uppercase text-[#a49e91]">
               <li>
-                <Link href="#shop-all" className="hover:text-[#E3B358] transition-colors">
+                <Link href="/shop" className="hover:text-[#E3B358] transition-colors">
                   Shop All Departments
                 </Link>
               </li>
               <li>
-                <Link href="#about" className="hover:text-[#E3B358] transition-colors">
+                <Link href="/about" className="hover:text-[#E3B358] transition-colors">
                   About Edlizer Beauty
                 </Link>
               </li>
               <li>
-                <Link href="#returns" className="hover:text-[#E3B358] transition-colors">
+                <Link href="/returns" className="hover:text-[#E3B358] transition-colors">
                   Returns & Exchange Policy
                 </Link>
               </li>
               <li>
-                <Link href="#privacy" className="hover:text-[#E3B358] transition-colors">
+                <Link href="/privacy" className="hover:text-[#E3B358] transition-colors">
                   Privacy Policy
                 </Link>
               </li>
               <li>
-                <Link href="#deals" className="hover:text-[#E3B358] transition-colors">
+                <Link href="/deals" className="hover:text-[#E3B358] transition-colors">
                   Deals & Special Offers
                 </Link>
               </li>
@@ -184,27 +184,27 @@ export const Footer: React.FC = () => {
             </h4>
             <ul className="space-y-2.5 text-xs tracking-wider uppercase text-[#a49e91]">
               <li>
-                <a href="#shop-all" className="hover:text-[#E3B358] transition-colors">
+                <a href="/shop" className="hover:text-[#E3B358] transition-colors">
                   Makeup (1)
                 </a>
               </li>
               <li>
-                <a href="#skincare-highlights" className="hover:text-[#E3B358] transition-colors">
+                <a href="/shop?category=Skincare" className="hover:text-[#E3B358] transition-colors">
                   Skincare (3)
                 </a>
               </li>
               <li>
-                <a href="#shop-all" className="hover:text-[#E3B358] transition-colors">
+                <a href="/shop" className="hover:text-[#E3B358] transition-colors">
                   Brushes (3)
                 </a>
               </li>
               <li>
-                <a href="#shop-all" className="hover:text-[#E3B358] transition-colors">
+                <a href="/shop" className="hover:text-[#E3B358] transition-colors">
                   Lip Care (2)
                 </a>
               </li>
               <li>
-                <a href="#shop-all" className="hover:text-[#E3B358] transition-colors">
+                <a href="/shop" className="hover:text-[#E3B358] transition-colors">
                   Bath & Body (1)
                 </a>
               </li>
@@ -217,7 +217,7 @@ export const Footer: React.FC = () => {
               Top Brands Sourced
             </h4>
             <p className="text-xs text-[#a49e91] leading-relaxed">
-              Fenty Beauty, Lancôme, NYX, Maybelline, Garnier, MAC Cosmetics, L'Oréal, NARS, Sephora, Morphe.
+              Fenty Beauty, Lancôme, NYX, Maybelline, Garnier, MAC Cosmetics, L&rsquo;Oréal, NARS, Sephora, Morphe.
             </p>
             <div className="p-3.5 rounded-xl bg-white/5 border border-[#2e2a24] flex items-center gap-2.5 text-xs text-[#E3B358]">
               <ShieldCheck className="w-4 h-4 text-[#2f8f5c]" />
@@ -265,10 +265,10 @@ export const Footer: React.FC = () => {
 
           {/* Quick Legal Links */}
           <div className="flex items-center gap-6 uppercase tracking-wider text-[11px]">
-            <Link href="#privacy" className="hover:text-white transition-colors">
+            <Link href="/privacy" className="hover:text-white transition-colors">
               Privacy Policy
             </Link>
-            <Link href="#returns" className="hover:text-white transition-colors">
+            <Link href="/returns" className="hover:text-white transition-colors">
               Returns
             </Link>
           </div>

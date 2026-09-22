@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { AuthProvider } from "@/context/AuthContext";
+import { StoreShell } from "@/components/StoreShell";
 
 export const metadata: Metadata = {
   title: "EDLIZER BEAUTY | Beauty On Your Terms — Ghana's Premier Beauty Outlet",
@@ -23,7 +24,11 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-full flex flex-col font-sans bg-[#ffffff] text-[#201c17]">
-        <AuthProvider>{children}</AuthProvider>
+        <AuthProvider>
+          {/* Navigation, footer, bag, search and every overlay live in the shell
+              so each route shares one instance of them. */}
+          <StoreShell>{children}</StoreShell>
+        </AuthProvider>
       </body>
     </html>
   );

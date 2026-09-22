@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import { Product } from "./ProductCard";
 import {
   Sparkles,
   Flame,
@@ -38,7 +39,7 @@ export const shopCategories: CategoryData[] = [
       "Hand Wash",
     ],
     featuredImage:
-      "https://images.unsplash.com/photo-1556228720-195a672e8a03?q=80&w=600&auto=format&fit=crop",
+      "/assets/products/good-molecules-clarify-cleanse-bar/1.jpeg",
     description: "Invigorating botanical cleansers, nourishing body washes & rich moisture balms.",
   },
   {
@@ -46,7 +47,7 @@ export const shopCategories: CategoryData[] = [
     count: 3,
     badge: "3 STYLES",
     featuredImage:
-      "https://images.unsplash.com/photo-1596462502278-27bfdc403348?q=80&w=600&auto=format&fit=crop",
+      "/assets/products/bh-cosmetics-brush-set/1.jpeg",
     description: "Ultra-plush synthetic artistry brushes for precision blending and seamless application.",
   },
   {
@@ -54,7 +55,7 @@ export const shopCategories: CategoryData[] = [
     count: 0,
     subcategories: ["Body Mist / Body Splash", "Perfumes"],
     featuredImage:
-      "https://images.unsplash.com/photo-1547887537-6158d64c35b3?q=80&w=600&auto=format&fit=crop",
+      "/assets/products/morphe-2-3in1-face-mist/1.webp",
     description: "Captivating eau de parfums and all-day sensorial body splashes.",
   },
   {
@@ -62,14 +63,14 @@ export const shopCategories: CategoryData[] = [
     count: 0,
     badge: "CURATED",
     featuredImage:
-      "https://images.unsplash.com/photo-1512290900672-1f02e604f8dd?q=80&w=600&auto=format&fit=crop",
+      "/assets/products/studio-london-brush-set/1.png",
     description: "Luxury bundled beauty rituals and skincare starter kits for effortless gifting.",
   },
   {
     name: "Hair Accessories",
     count: 0,
     featuredImage:
-      "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?q=80&w=600&auto=format&fit=crop",
+      "/assets/products/simple-soothing-facial-toner/1.jpg",
     description: "Pure mulberry silk bands, spa headbands, and vanity claw clips.",
   },
   {
@@ -86,7 +87,7 @@ export const shopCategories: CategoryData[] = [
       "Lipsticks",
     ],
     featuredImage:
-      "https://images.unsplash.com/photo-1586495777744-4413f21062fa?q=80&w=600&auto=format&fit=crop",
+      "/assets/products/nyx-lip-lingerie-ruffle-trim/1.webp",
     description: "Plumping peptide elixirs, velvet lipstains, and barrier hydration balms.",
   },
   {
@@ -113,14 +114,14 @@ export const shopCategories: CategoryData[] = [
       "Setting Powder",
     ],
     featuredImage:
-      "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?q=80&w=600&auto=format&fit=crop",
+      "/assets/products/beauty-creations-setting-powder/1.jpg",
     description: "High-performance foundations, setting powders, and pigments from world-renowned brands.",
   },
   {
     name: "Nails",
     count: 0,
     featuredImage:
-      "https://images.unsplash.com/photo-1604654894610-df63bc536371?q=80&w=600&auto=format&fit=crop",
+      "/assets/products/ienvy-eyelash-glue/1.jpg",
     description: "Nourishing cuticle oils, salon-grade nail treatments, and glossy finishes.",
   },
   {
@@ -139,14 +140,14 @@ export const shopCategories: CategoryData[] = [
       "Suncare and Sunscreen",
     ],
     featuredImage:
-      "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?q=80&w=600&auto=format&fit=crop",
+      "/assets/products/good-molecules-acne-foaming-cleanser/1.webp",
     description: "Targeted clinical correctors, barrier toners, and potent antioxidant serums.",
   },
   {
     name: "Tools & Accessories",
     count: 0,
     featuredImage:
-      "https://images.unsplash.com/photo-1596462502278-27bfdc403348?q=80&w=600&auto=format&fit=crop",
+      "/assets/products/studio-london-brush-set/1.png",
     description: "Gua sha stones, precision beauty sponges, and compact vanity mirrors.",
   },
 ];
@@ -154,7 +155,7 @@ export const shopCategories: CategoryData[] = [
 interface MegaMenuProps {
   activeMenu: string | null;
   onClose: () => void;
-  onAddToCart?: (product: any) => void;
+  onAddToCart?: (product: Product) => void;
   onSelectCategory?: (category: string) => void;
 }
 
@@ -173,7 +174,9 @@ export const MegaMenu: React.FC<MegaMenuProps> = ({
   return (
     <div
       onMouseLeave={onClose}
-      className="absolute top-full left-0 w-full bg-white/80 backdrop-blur-2xl backdrop-saturate-150 border-b border-white/60 shadow-[0_25px_60px_-15px_rgba(32,28,23,0.12)] z-50 animate-in fade-in slide-in-from-top-2 duration-200"
+      // Opaque: the panel now drops over the dark campaign hero, so any
+      // translucency would let the headline bleed through the menu copy.
+      className="absolute top-full left-0 w-full bg-[#fdfbf7] border-b border-[#e6e0d3] shadow-[0_25px_60px_-15px_rgba(32,28,23,0.28)] z-50 animate-in fade-in slide-in-from-top-2 duration-200"
     >
       <div className="max-w-7xl mx-auto px-6 py-8">
         {/* SHOP ALL MEGA MENU */}
@@ -186,7 +189,7 @@ export const MegaMenu: React.FC<MegaMenuProps> = ({
                   <span className="w-2 h-2 rounded-full bg-[#C58E2A]" />
                   All Departments (10)
                 </span>
-                <span className="text-[10px] text-[#A49E91] font-mono">100% Genuine</span>
+                <span className="text-[10px] text-[#A49E91] font-sans">100% Genuine</span>
               </div>
 
               <div className="space-y-1 max-h-105 overflow-y-auto pr-2">
@@ -229,7 +232,7 @@ export const MegaMenu: React.FC<MegaMenuProps> = ({
                       </div>
                       <div className="flex items-center gap-1.5">
                         <span
-                          className={`font-mono text-[11px] ${
+                          className={`font-sans tabular-nums text-[11px] ${
                             isSelected ? "text-[#C58E2A]" : "text-[#a49e91]"
                           }`}
                         >
@@ -248,7 +251,7 @@ export const MegaMenu: React.FC<MegaMenuProps> = ({
 
               <div className="mt-4 pt-3 border-t border-[#e6e0d3]/60 flex items-center justify-between">
                 <Link
-                  href="#shop-all"
+                  href="/shop"
                   onClick={onClose}
                   className="text-xs uppercase font-bold text-[#C58E2A] hover:text-[#9B6B18] transition-colors flex items-center gap-1.5"
                 >
@@ -276,7 +279,7 @@ export const MegaMenu: React.FC<MegaMenuProps> = ({
                   {hoveredCategory.subcategories.map((sub, i) => (
                     <Link
                       key={i}
-                      href="#shop-all"
+                      href="/shop"
                       onClick={() => {
                         onSelectCategory?.(sub);
                         onClose();
@@ -305,7 +308,7 @@ export const MegaMenu: React.FC<MegaMenuProps> = ({
                     </p>
                   </div>
                   <Link
-                    href="#shop-all"
+                    href="/shop"
                     onClick={onClose}
                     className="inline-flex items-center gap-1.5 bg-[#171512] text-white text-[11px] font-bold uppercase tracking-wider px-4 py-2 rounded-full hover:bg-[#C58E2A] transition-colors"
                   >
@@ -343,7 +346,7 @@ export const MegaMenu: React.FC<MegaMenuProps> = ({
                 <div className="flex gap-4 items-center">
                   <div className="w-24 h-24 rounded-xl bg-white p-2 border border-[#e6e0d3] shrink-0 overflow-hidden flex items-center justify-center">
                     <img
-                      src="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?q=80&w=600&auto=format&fit=crop"
+                      src="/assets/products/nars-radiant-foundation/1.jpg"
                       alt="NARS Radiant Foundation"
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform"
                     />
@@ -382,7 +385,7 @@ export const MegaMenu: React.FC<MegaMenuProps> = ({
                       stockCount: 8,
                       isBestSeller: true,
                       image:
-                        "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?q=80&w=600&auto=format&fit=crop",
+                        "/assets/products/nars-radiant-foundation/1.jpg",
                     })
                   }
                   className="mt-3 w-full bg-[#171512] text-white hover:bg-[#C58E2A] text-xs uppercase font-bold py-2.5 rounded-full transition-colors flex items-center justify-center gap-2"
@@ -395,7 +398,7 @@ export const MegaMenu: React.FC<MegaMenuProps> = ({
               {/* Visual Campaign Banner */}
               <div className="relative rounded-2xl overflow-hidden aspect-video group border border-[#e6e0d3]">
                 <img
-                  src={hoveredCategory.featuredImage || "https://images.unsplash.com/photo-1596462502278-27bfdc403348?q=80&w=800&auto=format&fit=crop"}
+                  src={hoveredCategory.featuredImage || "/assets/products/creme-shop-banana-powder/1.webp"}
                   alt={hoveredCategory.name}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                 />
@@ -448,7 +451,7 @@ export const MegaMenu: React.FC<MegaMenuProps> = ({
                   category: "Foundation",
                   price: "GHS 55.00",
                   badge: "EVERYDAY VALUE",
-                  image: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?q=80&w=600&auto=format&fit=crop",
+                  image: "/assets/products/nars-radiant-foundation/1.jpg",
                   desc: "Silky, lightweight coverage that effortlessly evens complexion.",
                 },
                 {
@@ -456,7 +459,7 @@ export const MegaMenu: React.FC<MegaMenuProps> = ({
                   category: "Face Toners, Skincare",
                   price: "GHS 100.00",
                   badge: "SKINCARE ESSENTIAL",
-                  image: "https://images.unsplash.com/photo-1608248597359-00994d4d1685?q=80&w=600&auto=format&fit=crop",
+                  image: "/assets/products/nars-radiant-foundation/1.jpg",
                   desc: "100% alcohol-free calming toner with pro-vitamin B5 & chamomile.",
                 },
                 {
@@ -464,7 +467,7 @@ export const MegaMenu: React.FC<MegaMenuProps> = ({
                   category: "Face Serums, Skincare",
                   price: "GHS 250.00",
                   badge: "VIRAL FAVORITE",
-                  image: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?q=80&w=600&auto=format&fit=crop",
+                  image: "/assets/products/nars-radiant-foundation/1.jpg",
                   desc: "Formulated with tranexamic acid and niacinamide to fade hyperpigmentation.",
                 },
                 {
@@ -472,7 +475,7 @@ export const MegaMenu: React.FC<MegaMenuProps> = ({
                   category: "Setting Powder",
                   price: "GHS 200.00",
                   badge: "FLAWLESS FINISH",
-                  image: "https://images.unsplash.com/photo-1596462502278-27bfdc403348?q=80&w=600&auto=format&fit=crop",
+                  image: "/assets/products/nars-radiant-foundation/1.jpg",
                   desc: "Micro-milled pore-blurring baking powder for all-day matte perfection.",
                 },
               ].map((deal, idx) => (

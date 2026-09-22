@@ -16,7 +16,7 @@ export const SensorialFeatures: React.FC = () => {
             High-Bioavailability Botanical Formulations
           </h2>
           <p className="text-base text-[#6f6a60] font-light leading-relaxed">
-            Every drop is consciously formulated with bio-compatible lipids and clinically active botanical concentrations that penetrate deeply without disrupting your skin's natural microbiome.
+            Every drop is consciously formulated with bio-compatible lipids and clinically active botanical concentrations that penetrate deeply without disrupting your skin&rsquo;s natural microbiome.
           </p>
         </div>
 

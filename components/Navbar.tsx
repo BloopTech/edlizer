@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import { Product } from "./ProductCard";
 import {
   Search,
   ShoppingBag,
@@ -9,7 +10,6 @@ import {
   Menu as MenuIcon,
   X,
   ChevronDown,
-  Phone,
   User as UserIcon,
 } from "lucide-react";
 import { Logo } from "./Logo";
@@ -23,7 +23,7 @@ interface NavbarProps {
   onOpenWishlist?: () => void;
   onOpenSearch?: () => void;
   onOpenAuth?: () => void;
-  onAddToCart?: (product: any) => void;
+  onAddToCart?: (product: Product) => void;
   onSelectCategory?: (category: string) => void;
 }
 
@@ -42,6 +42,8 @@ export const Navbar: React.FC<NavbarProps> = ({
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [mobileExpanded, setMobileExpanded] = useState<string | null>(null);
+  // True while the header is still layered over a dark section (the campaign hero).
+  const [overDarkSection, setOverDarkSection] = useState(true);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -51,194 +53,269 @@ export const Navbar: React.FC<NavbarProps> = ({
         setIsScrolled(false);
       }
     };
-    window.addEventListener("scroll", handleScroll);
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  /**
+   * Drive the logo/nav theme off the section sitting underneath the header rather
+   * than off a scroll offset: the header band is subtracted from the viewport, so the
+   * dark treatment holds until the hero has fully passed behind the navigation.
+   */
+  useEffect(() => {
+    const darkSection = document.querySelector("[data-nav-theme='dark']");
+
+    if (!darkSection) {
+      // Routes without a dark hero fall back to the light treatment. Deferring a
+      // frame keeps the dark-first paint (and avoids a cascading render) for the
+      // pages that do lead with the campaign hero.
+      const frame = requestAnimationFrame(() => setOverDarkSection(false));
+      return () => cancelAnimationFrame(frame);
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => setOverDarkSection(entry.isIntersecting),
+      { rootMargin: "-72px 0px 0px 0px", threshold: 0 }
+    );
+    observer.observe(darkSection);
+    return () => observer.disconnect();
+  }, []);
+
+  // The mega menu drops a light panel, so the header returns to its light treatment.
+  const onDark = overDarkSection && !activeMenu;
+
   const navLinks = [
-    { name: "SHOP ALL", id: "SHOP_ALL", hasMega: true },
-    { name: "DEALS & OFFERS", id: "DEALS", hasMega: true, badge: "SAVE" },
-    { name: "BEAUTY RITUAL", href: "#beauty-ritual" },
+    { name: "SHOP ALL", id: "SHOP_ALL", hasMega: true, href: "/shop" },
+    { name: "DEALS & OFFERS", id: "DEALS", hasMega: true, badge: "SAVE", href: "/deals" },
+    { name: "BEAUTY RITUAL", href: "/beauty-ritual" },
+    { name: "ABOUT", href: "/about" },
+    { name: "CONTACT US", href: "/contact" },
   ];
+
+  // Shared themed class fragments — keeps the dark/light swap consistent across controls.
+  const iconButtonClass = onDark
+    ? "text-white/90 hover:text-[#E3B358] hover:bg-white/10"
+    : "text-[#201c17] hover:text-[#C58E2A] hover:bg-[#f7f4ee]";
+  const navLinkClass = onDark
+    ? "text-white/90 hover:text-[#E3B358]"
+    : "text-[#201c17] hover:text-[#C58E2A]";
 
   return (
     <>
-      {/* Top Announcement Bar */}
-      <div className="bg-[#171512] text-[#efe9de] text-[11px] font-medium tracking-wider uppercase py-2 px-4 relative z-50 border-b border-[#2e2a24]">
-        <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-center sm:justify-between gap-3 text-[#a49e91]">
-          <span className="flex items-center gap-1.5 hover:text-white transition-colors">
-            <Phone className="w-3.5 h-3.5 text-[#C58E2A]" />
-            <span>Call / WhatsApp: <strong className="text-white">055 964 0640</strong></span>
-          </span>
-          <span className="text-[#a49e91]">Mondays - Saturdays, 9am - 5pm</span>
-        </div>
-      </div>
+      <div className="fixed top-0 inset-x-0 z-40">
+        {/* Text-safe gradient: strongest behind the nav, dissolving into the photograph */}
+        <div
+          className={`pointer-events-none absolute inset-x-0 top-0 h-[260%] -z-10 transition-opacity duration-500 ease-out bg-[linear-gradient(to_bottom,rgba(8,6,5,0.8)_0%,rgba(8,6,5,0.62)_32%,rgba(8,6,5,0.34)_58%,rgba(8,6,5,0.12)_80%,rgba(8,6,5,0)_100%)] ${
+            onDark && !isScrolled ? "opacity-100" : "opacity-0"
+          }`}
+        />
 
-      {/* Main Glass Navigation Header */}
-      <header
-        className={`sticky top-0 z-40 transition-all duration-300 ${
-          isScrolled
-            ? "bg-white/60 backdrop-blur-2xl backdrop-saturate-150 border-b border-white/50 shadow-[0_10px_35px_-5px_rgba(23,21,18,0.08)] py-2.5"
-            : "bg-white/80 backdrop-blur-md border-b border-[#e6e0d3]/60 py-4"
-        }`}
-      >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between">
-            {/* Mobile Menu Hamburger Button */}
-            <div className="lg:hidden flex items-center">
-              <button
-                onClick={() => setMobileMenuOpen(true)}
-                className="p-2 -ml-2 text-[#201c17] hover:text-[#C58E2A] transition-colors"
-                aria-label="Open mobile menu"
-              >
-                <MenuIcon className="w-6 h-6 stroke-[1.5]" />
-              </button>
-            </div>
-
-            {/* Left/Center Brand Logo in Gold */}
-            <div className="flex items-center">
-              <Link href="/" className="focus:outline-none">
-                <Logo
-                  size={isScrolled ? "sm" : "md"}
-                  variant="gold"
-                  className="transition-all duration-300"
-                />
-              </Link>
-            </div>
-
-            {/* Desktop Navigation Links with Mega Menus */}
-            <nav className="hidden lg:flex items-center gap-7 xl:gap-8">
-              {navLinks.map((item) => (
-                <div
-                  key={item.name}
-                  className="relative group"
-                  onMouseEnter={() => {
-                    if (item.hasMega && item.id) setActiveMenu(item.id);
-                    else setActiveMenu(null);
-                  }}
+        {/* Main Navigation Header — layered directly over the hero while it is dark */}
+        <header
+          className={`relative transition-[background-color,padding,box-shadow] duration-300 ease-out ${
+            onDark
+              ? isScrolled
+                ? "bg-[#0d0b09]/80 backdrop-blur-xl border-b border-white/10"
+                : "bg-transparent"
+              : activeMenu
+                ? // Solid while the mega menu is open so nothing bleeds through from the hero
+                  "bg-[#fdfbf7] border-b border-[#e6e0d3]"
+                : isScrolled
+                  ? "bg-white/80 backdrop-blur-2xl backdrop-saturate-150 border-b border-white/60 shadow-[0_10px_35px_-5px_rgba(23,21,18,0.08)]"
+                  : "bg-white/90 backdrop-blur-md border-b border-[#e6e0d3]/60"
+          } ${isScrolled ? "py-2.5" : "py-4"}`}
+        >
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex items-center justify-between">
+              {/* Mobile Menu Hamburger Button */}
+              <div className="lg:hidden flex items-center">
+                <button
+                  onClick={() => setMobileMenuOpen(true)}
+                  className={`p-2 -ml-2 rounded-full transition-colors duration-300 ${iconButtonClass}`}
+                  aria-label="Open mobile menu"
                 >
-                  {item.hasMega ? (
-                    <button
-                      onClick={() => {
-                        setActiveMenu(activeMenu === item.id ? null : item.id || null);
-                      }}
-                      className={`inline-flex items-center gap-1.5 text-[12.5px] font-medium tracking-[0.08em] uppercase py-2 transition-colors relative ${
-                        activeMenu === item.id
-                          ? "text-[#C58E2A]"
-                          : "text-[#201c17] hover:text-[#C58E2A]"
-                      }`}
-                    >
-                      <span>{item.name}</span>
-                      {item.badge && (
-                        <span className="text-[9px] bg-[#fde6d2] text-[#c06a1c] px-1.5 py-0.2 rounded font-bold">
-                          {item.badge}
+                  <MenuIcon className="w-6 h-6 stroke-[1.5]" />
+                </button>
+              </div>
+
+              {/* Brand lockup — white over the dark hero, gold over light sections */}
+              <div className="flex items-center">
+                <Link href="/" className="focus:outline-none" aria-label="Edlizer Beauty — home">
+                  <Logo
+                    size={isScrolled ? "sm" : "md"}
+                    crossfade
+                    showWhite={onDark}
+                    preload
+                    className="transition-all duration-300"
+                  />
+                </Link>
+              </div>
+
+              {/* Desktop Navigation Links with Mega Menus */}
+              <nav className="hidden lg:flex items-center gap-4 xl:gap-7">
+                {navLinks.map((item) => (
+                  <div
+                    key={item.name}
+                    className="relative group"
+                    onMouseEnter={() => {
+                      if (item.hasMega && item.id) setActiveMenu(item.id);
+                      else setActiveMenu(null);
+                    }}
+                  >
+                    {item.hasMega ? (
+                      <Link
+                        href={item.href || "#"}
+                        onClick={() => setActiveMenu(null)}
+                        className={`inline-flex items-center gap-1.5 whitespace-nowrap text-[12.5px] font-medium tracking-[0.08em] uppercase py-2 transition-colors duration-300 relative ${
+                          activeMenu === item.id
+                            ? "text-[#C58E2A]"
+                            : navLinkClass
+                        }`}
+                      >
+                        <span>{item.name}</span>
+                        {item.badge && (
+                          <span
+                            className={`text-[9px] px-1.5 py-0.2 rounded font-bold transition-colors duration-300 ${
+                              onDark
+                                ? "bg-[#C58E2A] text-[#171512]"
+                                : "bg-[#fde6d2] text-[#c06a1c]"
+                            }`}
+                          >
+                            {item.badge}
+                          </span>
+                        )}
+                        <span
+                          role="button"
+                          tabIndex={0}
+                          aria-label={`Toggle ${item.name} menu`}
+                          aria-expanded={activeMenu === item.id}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            setActiveMenu(activeMenu === item.id ? null : item.id || null);
+                          }}
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter" || e.key === " ") {
+                              e.preventDefault();
+                              setActiveMenu(activeMenu === item.id ? null : item.id || null);
+                            }
+                          }}
+                          className="inline-flex"
+                        >
+                          <ChevronDown
+                            className={`w-3.5 h-3.5 transition-transform duration-200 ${
+                              onDark ? "text-white/60" : "text-[#6f6a60]"
+                            } ${activeMenu === item.id ? "rotate-180 text-[#C58E2A]" : ""}`}
+                          />
                         </span>
-                      )}
-                      <ChevronDown
-                        className={`w-3.5 h-3.5 text-[#6f6a60] transition-transform duration-200 ${
-                          activeMenu === item.id ? "rotate-180 text-[#C58E2A]" : ""
-                        }`}
-                      />
-                      <span
-                        className={`absolute bottom-0 left-0 h-0.5 bg-[#C58E2A] transition-all duration-300 ${
-                          activeMenu === item.id ? "w-full" : "w-0 group-hover:w-full"
-                        }`}
-                      />
-                    </button>
-                  ) : (
-                    <Link
-                      href={item.href || "#"}
-                      className="inline-flex items-center gap-1 text-[12.5px] font-medium tracking-[0.08em] uppercase py-2 text-[#201c17] hover:text-[#C58E2A] transition-colors relative group"
-                    >
-                      <span>{item.name}</span>
-                      <span className="absolute bottom-0 left-0 h-0.5 bg-[#C58E2A] w-0 group-hover:w-full transition-all duration-300" />
-                    </Link>
-                  )}
-                </div>
-              ))}
-            </nav>
-
-            {/* Right: Search, Account, Wishlist, Cart in GHS */}
-            <div className="flex items-center gap-1 sm:gap-2.5">
-              {/* Search */}
-              <button
-                onClick={onOpenSearch}
-                className="p-2 text-[#201c17] hover:text-[#C58E2A] hover:bg-[#f7f4ee] rounded-full transition-colors flex items-center gap-1.5 text-xs uppercase font-medium tracking-wider"
-                title="Search products"
-              >
-                <Search className="w-5 h-5 stroke-[1.5]" />
-                <span className="hidden xl:inline text-[12px] font-sans">Search</span>
-              </button>
-
-              {/* User Account / Sign In */}
-              <button
-                onClick={onOpenAuth}
-                className="p-2 text-[#201c17] hover:text-[#C58E2A] hover:bg-[#f7f4ee] rounded-full transition-colors flex items-center gap-1.5 text-xs uppercase font-medium tracking-wider"
-                title={user ? "My Account" : "Sign In"}
-              >
-                {user ? (
-                  <div className="flex items-center gap-1.5">
-                    <div className="w-6 h-6 rounded-full bg-[#C58E2A] text-[#171512] font-bold text-[11px] flex items-center justify-center">
-                      {user.user_metadata?.full_name
-                        ? user.user_metadata.full_name.charAt(0).toUpperCase()
-                        : user.email?.charAt(0).toUpperCase()}
-                    </div>
-                    <span className="hidden xl:inline text-[12px] font-sans truncate max-w-20">
-                      {user.user_metadata?.full_name?.split(" ")[0] || "Account"}
-                    </span>
+                        <span
+                          className={`absolute bottom-0 left-0 h-0.5 bg-[#C58E2A] transition-all duration-300 ${
+                            activeMenu === item.id ? "w-full" : "w-0 group-hover:w-full"
+                          }`}
+                        />
+                      </Link>
+                    ) : (
+                      <Link
+                        href={item.href || "#"}
+                        className={`inline-flex items-center gap-1 whitespace-nowrap text-[12.5px] font-medium tracking-[0.08em] uppercase py-2 transition-colors duration-300 relative group ${navLinkClass}`}
+                      >
+                        <span>{item.name}</span>
+                        <span className="absolute bottom-0 left-0 h-0.5 bg-[#C58E2A] w-0 group-hover:w-full transition-all duration-300" />
+                      </Link>
+                    )}
                   </div>
-                ) : (
-                  <>
-                    <UserIcon className="w-5 h-5 stroke-[1.5]" />
-                    <span className="hidden xl:inline text-[12px] font-sans">Sign In</span>
-                  </>
-                )}
-              </button>
+                ))}
+              </nav>
 
-              {/* Wishlist */}
-              <button
-                onClick={onOpenWishlist}
-                className="p-2 text-[#201c17] hover:text-[#C58E2A] hover:bg-[#f7f4ee] rounded-full transition-colors relative"
-                title="Wishlist"
-              >
-                <Heart className="w-5 h-5 stroke-[1.5]" />
-                {wishlistCount > 0 && (
-                  <span className="absolute top-1 right-1 bg-[#d6552e] text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center shadow-xs">
-                    {wishlistCount}
-                  </span>
-                )}
-              </button>
+              {/* Right: Search, Account, Wishlist, Cart in GHS */}
+              <div className="flex items-center gap-1 sm:gap-2.5">
+                {/* Search */}
+                <button
+                  onClick={onOpenSearch}
+                  className={`p-2 rounded-full transition-colors duration-300 flex items-center gap-1.5 text-xs uppercase font-medium tracking-wider ${iconButtonClass}`}
+                  title="Search products"
+                >
+                  <Search className="w-5 h-5 stroke-[1.5]" />
+                  <span className="hidden xl:inline text-[12px] font-sans">Search</span>
+                </button>
 
-              {/* Cart Drawer */}
-              <button
-                onClick={onOpenCart}
-                className="p-2 text-[#201c17] hover:text-[#C58E2A] hover:bg-[#f7f4ee] rounded-full transition-colors relative flex items-center gap-1.5"
-                title="Shopping Bag"
-              >
-                <div className="relative">
-                  <ShoppingBag className="w-5 h-5 stroke-[1.5]" />
-                  {cartCount > 0 && (
-                    <span className="absolute -top-1.5 -right-2 bg-[#171512] text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center ring-2 ring-white shadow-xs">
-                      {cartCount}
+                {/* User Account / Sign In */}
+                <button
+                  onClick={onOpenAuth}
+                  className={`p-2 rounded-full transition-colors duration-300 flex items-center gap-1.5 text-xs uppercase font-medium tracking-wider ${iconButtonClass}`}
+                  title={user ? "My Account" : "Sign In"}
+                >
+                  {user ? (
+                    <div className="flex items-center gap-1.5">
+                      <div className="w-6 h-6 rounded-full bg-[#C58E2A] text-[#171512] font-bold text-[11px] flex items-center justify-center">
+                        {user.user_metadata?.full_name
+                          ? user.user_metadata.full_name.charAt(0).toUpperCase()
+                          : user.email?.charAt(0).toUpperCase()}
+                      </div>
+                      <span className="hidden xl:inline text-[12px] font-sans truncate max-w-20">
+                        {user.user_metadata?.full_name?.split(" ")[0] || "Account"}
+                      </span>
+                    </div>
+                  ) : (
+                    <>
+                      <UserIcon className="w-5 h-5 stroke-[1.5]" />
+                      <span className="hidden xl:inline text-[12px] font-sans">Sign In</span>
+                    </>
+                  )}
+                </button>
+
+                {/* Wishlist */}
+                <button
+                  onClick={onOpenWishlist}
+                  className={`p-2 rounded-full transition-colors duration-300 relative ${iconButtonClass}`}
+                  title="Wishlist"
+                >
+                  <Heart className="w-5 h-5 stroke-[1.5]" />
+                  {wishlistCount > 0 && (
+                    <span className="absolute top-1 right-1 bg-[#d6552e] text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center shadow-xs">
+                      {wishlistCount}
                     </span>
                   )}
-                </div>
-                <span className="hidden md:inline text-[12px] font-sans uppercase font-semibold tracking-wider ml-1">
-                  Bag ({cartCount})
-                </span>
-              </button>
+                </button>
+
+                {/* Cart Drawer */}
+                <button
+                  onClick={onOpenCart}
+                  className={`p-2 rounded-full transition-colors duration-300 relative flex items-center gap-1.5 ${iconButtonClass}`}
+                  title="Shopping Bag"
+                >
+                  <div className="relative">
+                    <ShoppingBag className="w-5 h-5 stroke-[1.5]" />
+                    {cartCount > 0 && (
+                      <span
+                        className={`absolute -top-1.5 -right-2 text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center ring-2 shadow-xs transition-colors duration-300 ${
+                          onDark
+                            ? "bg-[#C58E2A] text-[#171512] ring-white/30"
+                            : "bg-[#171512] text-white ring-white"
+                        }`}
+                      >
+                        {cartCount}
+                      </span>
+                    )}
+                  </div>
+                  <span className="hidden xl:inline text-[12px] font-sans uppercase font-semibold tracking-wider ml-1 whitespace-nowrap">
+                    Bag ({cartCount})
+                  </span>
+                </button>
+              </div>
             </div>
           </div>
-        </div>
 
-        {/* Mega Menu Overlay */}
-        <MegaMenu
-          activeMenu={activeMenu}
-          onClose={() => setActiveMenu(null)}
-          onAddToCart={onAddToCart}
-          onSelectCategory={onSelectCategory}
-        />
-      </header>
+          {/* Mega Menu Overlay */}
+          <MegaMenu
+            activeMenu={activeMenu}
+            onClose={() => setActiveMenu(null)}
+            onAddToCart={onAddToCart}
+            onSelectCategory={onSelectCategory}
+          />
+        </header>
+      </div>
 
       {/* Mobile Drawer Navigation */}
       {mobileMenuOpen && (
@@ -292,7 +369,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   >
                     <span className="flex items-center gap-1.5">
                       <span>{cat.name}</span>
-                      <span className="text-[10px] font-mono text-[#a49e91]">
+                      <span className="text-[10px] font-sans tabular-nums text-[#a49e91]">
                         ({cat.count})
                       </span>
                     </span>
@@ -309,7 +386,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                       {cat.subcategories.map((sub, idx) => (
                         <li key={idx}>
                           <a
-                            href="#shop-all"
+                            href="/shop"
                             onClick={() => {
                               onSelectCategory?.(sub);
                               setMobileMenuOpen(false);
@@ -341,11 +418,32 @@ export const Navbar: React.FC<NavbarProps> = ({
                   </span>
                 </button>
                 <Link
-                  href="#beauty-ritual"
+                  href="/beauty-ritual"
                   onClick={() => setMobileMenuOpen(false)}
                   className="block py-2 text-[#201c17] hover:text-[#C58E2A]"
                 >
-                  Beauty Ritual & Gallery
+                  Beauty Ritual
+                </Link>
+                <Link
+                  href="/deals"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="block py-2 text-[#201c17] hover:text-[#C58E2A]"
+                >
+                  Deals & Offers
+                </Link>
+                <Link
+                  href="/about"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="block py-2 text-[#201c17] hover:text-[#C58E2A]"
+                >
+                  About
+                </Link>
+                <Link
+                  href="/contact"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="block py-2 text-[#201c17] hover:text-[#C58E2A]"
+                >
+                  Contact Us
                 </Link>
               </div>
             </div>

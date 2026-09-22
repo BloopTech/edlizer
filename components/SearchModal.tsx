@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { Search, X, ArrowRight, Sparkles } from "lucide-react";
-import { allEdlizerProducts } from "./ProductCatalog";
+import { edlizerProducts } from "@/lib/products";
 import { Product } from "./ProductCard";
 
 interface SearchModalProps {
@@ -22,7 +22,7 @@ export const SearchModal: React.FC<SearchModalProps> = ({
 
   if (!isOpen) return null;
 
-  const productPool = products && products.length > 0 ? products : allEdlizerProducts;
+  const productPool = products && products.length > 0 ? products : edlizerProducts;
 
   const results = query.trim()
     ? productPool.filter(
@@ -163,7 +163,7 @@ export const SearchModal: React.FC<SearchModalProps> = ({
             </div>
           ) : (
             <div className="text-center py-10 text-xs text-[#6f6a60]">
-              No products found matching "{query}". Try searching for NARS, Good Molecules, or Toner.
+              No products found matching &ldquo;{query}&rdquo;. Try searching for NARS, Good Molecules, or Toner.
             </div>
           )}
         </div>

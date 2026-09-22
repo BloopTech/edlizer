@@ -91,7 +91,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
               <h3 className="font-display text-lg font-semibold text-[#171512]">
                 Your Sacred Ritual Bag
               </h3>
-              <span className="text-xs bg-[#efe9de] text-[#201c17] px-2 py-0.5 rounded-full font-mono">
+              <span className="text-xs bg-[#efe9de] text-[#201c17] px-2 py-0.5 rounded-full font-sans tabular-nums">
                 {items.reduce((s, i) => s + i.quantity, 0)}
               </span>
             </div>
@@ -226,7 +226,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                     value={discountCode}
                     onChange={(e) => setDiscountCode(e.target.value)}
                     placeholder="Discount code (e.g. NOURISH20)"
-                    className="w-full bg-[#f7f4ee] border border-[#e6e0d3] rounded-full pl-9 pr-3 py-2 text-xs uppercase font-mono focus:outline-none focus:border-[#C58E2A]"
+                    className="w-full bg-[#f7f4ee] border border-[#e6e0d3] rounded-full pl-9 pr-3 py-2 text-xs uppercase font-sans focus:outline-none focus:border-[#C58E2A]"
                   />
                   <Tag className="w-3.5 h-3.5 text-[#a49e91] absolute left-3 top-2.5" />
                 </div>
