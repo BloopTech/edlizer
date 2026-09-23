@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Product } from "./ProductCard";
 import {
   Search,
@@ -38,6 +39,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   onSelectCategory,
 }) => {
   const { user } = useAuth();
+  const pathname = usePathname();
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -62,25 +64,47 @@ export const Navbar: React.FC<NavbarProps> = ({
    * Drive the logo/nav theme off the section sitting underneath the header rather
    * than off a scroll offset: the header band is subtracted from the viewport, so the
    * dark treatment holds until the hero has fully passed behind the navigation.
+   *
+   * Keyed on the pathname because this header lives in the root layout and never
+   * remounts between routes — without re-binding, an observer attached on a page
+   * with no dark hero would leave the nav stuck light after routing back home.
    */
   useEffect(() => {
-    const darkSection = document.querySelector("[data-nav-theme='dark']");
+    let observer: IntersectionObserver | undefined;
+    let frame = 0;
 
-    if (!darkSection) {
-      // Routes without a dark hero fall back to the light treatment. Deferring a
-      // frame keeps the dark-first paint (and avoids a cascading render) for the
-      // pages that do lead with the campaign hero.
-      const frame = requestAnimationFrame(() => setOverDarkSection(false));
-      return () => cancelAnimationFrame(frame);
-    }
+    // The new route's markup may not be committed on the first tick after a
+    // client-side navigation, so look on the next frame.
+    frame = requestAnimationFrame(() => {
+      const darkSection = document.querySelector("[data-nav-theme='dark']");
 
-    const observer = new IntersectionObserver(
-      ([entry]) => setOverDarkSection(entry.isIntersecting),
-      { rootMargin: "-72px 0px 0px 0px", threshold: 0 }
-    );
-    observer.observe(darkSection);
-    return () => observer.disconnect();
-  }, []);
+      if (!darkSection) {
+        setOverDarkSection(false);
+        return;
+      }
+
+      observer = new IntersectionObserver(
+        ([entry]) => setOverDarkSection(entry.isIntersecting),
+        { rootMargin: "-72px 0px 0px 0px", threshold: 0 }
+      );
+      observer.observe(darkSection);
+    });
+
+    return () => {
+      cancelAnimationFrame(frame);
+      observer?.disconnect();
+    };
+  }, [pathname]);
+
+  // Close any open panel when the route changes — an open mega menu would
+  // otherwise hold the header in its light treatment on the new page.
+  useEffect(() => {
+    const frame = requestAnimationFrame(() => {
+      setActiveMenu(null);
+      setMobileMenuOpen(false);
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [pathname]);
 
   // The mega menu drops a light panel, so the header returns to its light treatment.
   const onDark = overDarkSection && !activeMenu;

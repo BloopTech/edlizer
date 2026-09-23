@@ -14,7 +14,12 @@ import { Product } from "@/components/ProductCard";
  * where genuine review data exists, so the storefront never invents a score.
  */
 
-const PLACEHOLDER = "/assets/products/placeholder.svg";
+export const PLACEHOLDER = "/assets/products/placeholder.svg";
+
+/** True only when the product has its own photography, not the stand-in tile. */
+export function hasPhoto(product: Product): boolean {
+  return product.image !== PLACEHOLDER;
+}
 
 /** Department taxonomy, in the order it should appear in the shop filters. */
 export const departments = [
@@ -738,16 +743,22 @@ export function discountPercent(p: Product): number {
 }
 
 /** Homepage shelves, derived from the live catalogue rather than hand-listed. */
+const photographed = edlizerProducts.filter(hasPhoto);
+
 export const shelves = {
-  featured: edlizerProducts.filter((p) =>
-    p.categories?.includes("Foundation")
-  ),
-  skincare: edlizerProducts.filter((p) =>
+  featured: photographed.filter((p) => p.categories?.includes("Foundation")),
+  skincare: photographed.filter((p) =>
     p.categories?.some((c) =>
-      ["Skincare", "Face Serums", "Face Toners", "Face Wash or Cleanser", "Face Moisturizer"].includes(c)
+      [
+        "Skincare",
+        "Face Serums",
+        "Face Toners",
+        "Face Wash or Cleanser",
+        "Face Moisturizer",
+      ].includes(c)
     )
   ),
-  latest: edlizerProducts.filter((p) =>
+  latest: photographed.filter((p) =>
     p.categories?.some((c) =>
       ["Setting Powder", "Setting & Finishing Spray"].includes(c)
     )

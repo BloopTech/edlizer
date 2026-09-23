@@ -1,17 +1,23 @@
 import { createClient } from "next-sanity";
-import imageUrlBuilder from "@sanity/image-url";
+import { createImageUrlBuilder } from "@sanity/image-url";
+import type { SanityImageSource } from "@sanity/image-url";
 import { apiVersion, dataset, projectId } from "./env";
 
 export const client = createClient({
   projectId,
   dataset,
   apiVersion,
-  useCdn: false, // set to false for instant content updates
-  perspective: "raw", // ensures draft documents created via API are read immediately
+  // Served from Sanity's CDN: this is a public storefront reading published
+  // content, so cached responses are the right trade-off.
+  useCdn: true,
+  // Only published documents. "raw" would leak work-in-progress drafts onto
+  // the live shop.
+  perspective: "published",
 });
 
-const builder = imageUrlBuilder(client);
+const builder = createImageUrlBuilder(client);
 
-export function urlFor(source: any) {
+/** Build a transformed image URL from a Sanity image reference. */
+export function urlFor(source: SanityImageSource) {
   return builder.image(source);
 }

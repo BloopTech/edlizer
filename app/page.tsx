@@ -1,6 +1,5 @@
 "use client";
 
-
 import { HeroSection } from "@/components/HeroSection";
 import { BrandMarquee } from "@/components/BrandMarquee";
 import { FeaturedProducts } from "@/components/FeaturedProducts";
@@ -12,13 +11,13 @@ import { useStore } from "@/components/StoreShell";
 import { shelves } from "@/lib/products";
 import { Product } from "@/components/ProductCard";
 
+/*
+ * Navigation, footer, bag, search and every overlay live in <StoreShell> in the
+ * root layout, so this page renders only its own sections. The shelves come
+ * from lib/products and are already limited to photographed products.
+ */
 export default function Home() {
-  const {
-    wishlistIds,
-    addToCart,
-    toggleWishlist,
-    openQuickView,
-  } = useStore();
+  const { wishlistIds, addToCart, toggleWishlist, openQuickView } = useStore();
 
   const shelfProps = {
     onQuickView: openQuickView,
@@ -26,7 +25,6 @@ export default function Home() {
     onToggleWishlist: toggleWishlist,
     wishlistIds,
   };
-
 
   return (
     <>
@@ -37,25 +35,16 @@ export default function Home() {
       <BrandMarquee />
 
       {/* 3. Featured foundations from top global houses */}
-      <FeaturedProducts
-        products={shelves.featured}
-        {...shelfProps}
-      />
+      <FeaturedProducts products={shelves.featured} {...shelfProps} />
 
       {/* 4. Skincare highlights */}
-      <SkincareHighlights
-        products={shelves.skincare}
-        {...shelfProps}
-      />
+      <SkincareHighlights products={shelves.skincare} {...shelfProps} />
 
       {/* 5. Beauty ritual banner & lifestyle gallery */}
       <BeautyRitualBanner />
 
       {/* 6. Latest arrivals */}
-      <LatestProducts
-        products={shelves.latest}
-        {...shelfProps}
-      />
+      <LatestProducts products={shelves.latest} {...shelfProps} />
 
       {/* 7. Client testimonials */}
       <TestimonialsSection />

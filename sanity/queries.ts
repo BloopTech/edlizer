@@ -1,85 +1,40 @@
 import { groq } from "next-sanity";
 
+/**
+ * Image fields are dereferenced to plain CDN URLs because the storefront's
+ * `Product` type expects `image: string`. Returning the raw asset reference
+ * here would render every card broken.
+ */
+const productFields = groq`
+  "id": coalesce(slug.current, _id),
+  name,
+  brand,
+  categories,
+  "category": coalesce(categories[0], "Makeup"),
+  price,
+  originalPrice,
+  stockCount,
+  isBestSeller,
+  isFlashDeal,
+  isNew,
+  discountBadge,
+  "image": image.asset->url,
+  "gallery": gallery[].asset->url,
+  description,
+  sizes
+`;
+
+/** Every product that has a name, a price and a photo — anything half-authored
+ *  is skipped so a draft in progress cannot break the grid. */
 export const allProductsQuery = groq`
-  *[_type == "product"] | order(_createdAt desc) {
-    "id": coalesce(slug.current, _id),
-    name,
-    category,
-    price,
-    originalPrice,
-    rating,
-    reviewCount,
-    stockCount,
-    isBestSeller,
-    isFlashDeal,
-    isNew,
-    discountBadge,
-    image,
-    hoverImage,
-    description,
-    sizes
+  *[_type == "product" && defined(name) && defined(price) && defined(image.asset)]
+    | order(coalesce(isBestSeller, false) desc, name asc) {
+    ${productFields}
   }
 `;
 
-export const featuredProductsQuery = groq`
-  *[_type == "product" && category match "Foundation*"] | order(_createdAt desc) {
-    "id": coalesce(slug.current, _id),
-    name,
-    category,
-    price,
-    originalPrice,
-    rating,
-    reviewCount,
-    stockCount,
-    isBestSeller,
-    isFlashDeal,
-    isNew,
-    discountBadge,
-    image,
-    hoverImage,
-    description,
-    sizes
-  }
-`;
-
-export const skincareProductsQuery = groq`
-  *[_type == "product" && (category match "*Skincare*" || category match "*Toner*" || category match "*Cleanser*" || category match "*Serum*")] | order(_createdAt desc) {
-    "id": coalesce(slug.current, _id),
-    name,
-    category,
-    price,
-    originalPrice,
-    rating,
-    reviewCount,
-    stockCount,
-    isBestSeller,
-    isFlashDeal,
-    isNew,
-    discountBadge,
-    image,
-    hoverImage,
-    description,
-    sizes
-  }
-`;
-
-export const latestProductsQuery = groq`
-  *[_type == "product" && (category match "*Setting*" || isNew == true || category match "*Spray*")] | order(_createdAt desc) {
-    "id": coalesce(slug.current, _id),
-    name,
-    category,
-    price,
-    originalPrice,
-    rating,
-    reviewCount,
-    stockCount,
-    isBestSeller,
-    isFlashDeal,
-    isNew,
-    discountBadge,
-    image,
-    hoverImage,
-    description,
-    sizes
+export const productBySlugQuery = groq`
+  *[_type == "product" && slug.current == $slug][0] {
+    ${productFields}
   }
 `;

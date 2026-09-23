@@ -9,7 +9,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { Navbar } from "./Navbar";
 import { Footer } from "./Footer";
 import { CartDrawer, CartItem } from "./CartDrawer";
@@ -63,6 +63,8 @@ export const StoreShell: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const router = useRouter();
+  const pathname = usePathname();
+  const isStudio = pathname?.startsWith("/studio") ?? false;
 
   /**
    * One catalogue fetch for the whole app. Sanity is not wired up yet, so a
@@ -220,6 +222,8 @@ export const StoreShell: React.FC<{ children: React.ReactNode }> = ({
       goToDepartment,
     ]
   );
+
+  if (isStudio) return <>{children}</>;
 
   return (
     <StoreContext.Provider value={value}>
