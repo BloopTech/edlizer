@@ -6,7 +6,7 @@
  *   SANITY_WRITE_TOKEN=sk... node scripts/seed-sanity.mjs          # dry run
  *   SANITY_WRITE_TOKEN=sk... node scripts/seed-sanity.mjs --commit # write
  *
- * Safe to re-run: documents use a deterministic id (product.<slug>) so a
+ * Safe to re-run: documents use the product slug as a deterministic id, so a
  * second run updates rather than duplicating.
  */
 import fs from "node:fs";
@@ -130,7 +130,10 @@ async function run() {
     }
 
     const doc = {
-      _id: `product.${entry.id}`,
+      // No dot in the id: Sanity reserves dotted ids for system documents and
+      // hides them from unauthenticated reads, which would make every product
+      // invisible to the storefront.
+      _id: entry.id,
       _type: "product",
       name: entry.name,
       slug: { _type: "slug", current: entry.id },

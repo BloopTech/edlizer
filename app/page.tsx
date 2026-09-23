@@ -8,7 +8,7 @@ import { BeautyRitualBanner } from "@/components/BeautyRitualBanner";
 import { LatestProducts } from "@/components/LatestProducts";
 import { TestimonialsSection } from "@/components/TestimonialsSection";
 import { useStore } from "@/components/StoreShell";
-import { shelves } from "@/lib/products";
+import { deriveShelves } from "@/lib/products";
 import { Product } from "@/components/ProductCard";
 
 /*
@@ -17,7 +17,11 @@ import { Product } from "@/components/ProductCard";
  * from lib/products and are already limited to photographed products.
  */
 export default function Home() {
-  const { wishlistIds, addToCart, toggleWishlist, openQuickView } = useStore();
+  const { products, wishlistIds, addToCart, toggleWishlist, openQuickView } =
+    useStore();
+
+  // Derived from the live catalogue, so edits made in Sanity show up here too.
+  const shelves = deriveShelves(products);
 
   const shelfProps = {
     onQuickView: openQuickView,

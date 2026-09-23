@@ -18,16 +18,18 @@ const productFields = groq`
   isFlashDeal,
   isNew,
   discountBadge,
-  "image": image.asset->url,
+  // Falls back to the branded placeholder so a product awaiting photography
+  // still appears in the shop rather than vanishing from the catalogue.
+  "image": coalesce(image.asset->url, "/assets/products/placeholder.svg"),
   "gallery": gallery[].asset->url,
   description,
   sizes
 `;
 
-/** Every product that has a name, a price and a photo — anything half-authored
- *  is skipped so a draft in progress cannot break the grid. */
+/** Every product with at least a name and a price. Photography is optional —
+ *  the storefront shows a placeholder tile and keeps it out of the homepage. */
 export const allProductsQuery = groq`
-  *[_type == "product" && defined(name) && defined(price) && defined(image.asset)]
+  *[_type == "product" && defined(name) && defined(price)]
     | order(coalesce(isBestSeller, false) desc, name asc) {
     ${productFields}
   }

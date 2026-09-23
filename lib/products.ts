@@ -764,3 +764,53 @@ export const shelves = {
     )
   ),
 };
+
+/* ------------------------------------------------------------------
+ * Live derivations
+ *
+ * The exports above are computed from the built-in catalogue at module
+ * load, so they cannot see anything authored in Sanity. Pages should call
+ * these with `useStore().products` instead, which is the Sanity catalogue
+ * when one exists and the built-in list otherwise.
+ * ------------------------------------------------------------------ */
+
+const SKINCARE_DEPARTMENTS = [
+  "Skincare",
+  "Face Serums",
+  "Face Toners",
+  "Face Wash or Cleanser",
+  "Face Moisturizer",
+];
+
+const LATEST_DEPARTMENTS = ["Setting Powder", "Setting & Finishing Spray"];
+
+const inAny = (p: Product, departments: string[]) =>
+  (p.categories ?? [p.category]).some((c) => departments.includes(c));
+
+/** Homepage shelves. Only photographed products — a placeholder tile on the
+ *  landing page reads as a broken card. */
+export function deriveShelves(products: Product[]) {
+  const shot = products.filter(hasPhoto);
+  return {
+    featured: shot.filter((p) => inAny(p, ["Foundation"])),
+    skincare: shot.filter((p) => inAny(p, SKINCARE_DEPARTMENTS)),
+    latest: shot.filter((p) => inAny(p, LATEST_DEPARTMENTS)),
+  };
+}
+
+export const getOnOffer = (products: Product[]) =>
+  products.filter((p) => p.originalPrice);
+
+export const getBestSellers = (products: Product[]) =>
+  products.filter((p) => p.isBestSeller && p.stockCount > 0);
+
+export const getLowStock = (products: Product[]) =>
+  products
+    .filter((p) => p.stockCount > 0 && p.stockCount <= 8)
+    .sort((a, b) => a.stockCount - b.stockCount);
+
+/** Resolve curated ids (the ritual routines) against the live catalogue. */
+export const resolveByIds = (products: Product[], ids: readonly string[]) =>
+  ids
+    .map((id) => products.find((p) => p.id === id))
+    .filter(Boolean) as Product[];

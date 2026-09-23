@@ -4,11 +4,12 @@ import Link from "next/link";
 import { Flame, Tag, Clock, ArrowRight, ShieldCheck } from "lucide-react";
 import { ProductGrid } from "@/components/ProductGrid";
 import {
-  productsOnOffer,
-  bestSellers,
-  lowStock,
+  getOnOffer,
+  getBestSellers,
+  getLowStock,
   discountPercent,
 } from "@/lib/products";
+import { useStore } from "@/components/StoreShell";
 
 /**
  * Deals & Offers. Everything here is driven by real catalogue data — a product
@@ -16,6 +17,12 @@ import {
  * "last few left" reads the real stock count. Nothing is discounted for show.
  */
 export default function DealsPage() {
+  // Read the live catalogue so a price change in Sanity lands here immediately.
+  const { products } = useStore();
+  const productsOnOffer = getOnOffer(products);
+  const bestSellers = getBestSellers(products);
+  const lowStock = getLowStock(products);
+
   const topSaving = productsOnOffer.reduce(
     (best, p) => Math.max(best, discountPercent(p)),
     0

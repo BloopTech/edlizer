@@ -4,7 +4,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { Sun, Moon, Sparkles, ArrowRight } from "lucide-react";
 import { ProductGrid } from "@/components/ProductGrid";
-import { productsByIds, productById } from "@/lib/products";
+import { resolveByIds } from "@/lib/products";
+import { useStore } from "@/components/StoreShell";
 import { siteAssets } from "@/lib/assets";
 
 /**
@@ -116,6 +117,9 @@ const ROUTINES = [
 ] as const;
 
 export default function BeautyRitualPage() {
+  const { products } = useStore();
+  const byId = (id: string) => products.find((p) => p.id === id);
+
   return (
     <div className="pt-[72px] lg:pt-[80px] bg-white">
       {/* ---------- Masthead ---------- */}
@@ -179,7 +183,7 @@ export default function BeautyRitualPage() {
       {/* ---------- Routines ---------- */}
       {ROUTINES.map(({ key, icon: Icon, title, time, intro, steps }, routineIndex) => {
         const resolved = steps
-          .map((s) => ({ ...s, product: productById(s.id) }))
+          .map((s) => ({ ...s, product: byId(s.id) }))
           .filter((s) => s.product);
 
         return (
@@ -263,7 +267,7 @@ export default function BeautyRitualPage() {
                   Shop the {title.replace("The ", "").replace(" ritual", "")} ritual
                 </h3>
                 <ProductGrid
-                  products={productsByIds(steps.map((s) => s.id))}
+                  products={resolveByIds(products, steps.map((s) => s.id))}
                   columns={4}
                 />
               </div>
