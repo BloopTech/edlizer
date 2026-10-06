@@ -146,7 +146,7 @@ export const ShopFilters: React.FC<ShopFiltersProps> = ({
 
       {/* ---------- Department, grouped ---------- */}
       <Section
-        title="Department"
+        title="Category"
         badge={value.departments.length}
         defaultOpen
       >

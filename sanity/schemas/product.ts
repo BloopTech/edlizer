@@ -40,12 +40,12 @@ export const product = defineType({
     }),
     defineField({
       name: "categories",
-      title: "Departments",
+      title: "Categories",
       type: "array",
       group: "content",
       of: [{ type: "string" }],
       description:
-        "Must match the department names used by the shop filters, e.g. Foundation, Face Primer, Skincare.",
+        "Must match the category names used by the shop filters, e.g. Foundation, Face Primer, Skincare.",
       options: {
         list: [
           "Foundation",
@@ -71,7 +71,7 @@ export const product = defineType({
           "Makeup Wipes & Removers",
         ],
       },
-      validation: (r) => r.min(1).error("Pick at least one department."),
+      validation: (r) => r.min(1).error("Pick at least one category."),
     }),
     defineField({
       name: "description",

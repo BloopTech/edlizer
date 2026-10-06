@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Product } from "./ProductCard";
+import { siteDetails, allPhonesDisplay } from "@/lib/site";
 import {
   Search,
   ShoppingBag,
@@ -378,7 +379,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             {/* Navigation Accordion */}
             <div className="flex-1 overflow-y-auto p-4 space-y-2">
               <div className="text-[10px] font-bold uppercase tracking-widest text-[#a49e91] px-1 mb-1">
-                Shop 10 Beauty Departments
+                Shop 10 Beauty Categories
               </div>
 
               {shopCategories.map((cat) => (
@@ -475,10 +476,10 @@ export const Navbar: React.FC<NavbarProps> = ({
             {/* Bottom Contact & Hours */}
             <div className="p-4 bg-[#f7f4ee] border-t border-[#e6e0d3] space-y-2 text-xs">
               <div className="font-semibold text-[#171512]">
-                📞 055 964 0640
+                📞 {allPhonesDisplay}
               </div>
               <div className="text-[#6f6a60] text-[11px]">
-                Mondays - Saturdays, 9am - 5pm
+                {siteDetails.hours.days}, {siteDetails.hours.time}
               </div>
             </div>
           </div>

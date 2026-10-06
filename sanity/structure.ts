@@ -92,10 +92,10 @@ export const structure: StructureResolver = (S) =>
       S.divider(),
 
       S.listItem()
-        .title("By department")
+        .title("By category")
         .child(
           S.list()
-            .title("By department")
+            .title("By category")
             .items(
               DEPARTMENTS.map((dept) =>
                 S.listItem()

@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { Search, X, ArrowRight, Sparkles } from "lucide-react";
 import { edlizerProducts } from "@/lib/products";
+import { primaryPhone } from "@/lib/site";
 import { Product } from "./ProductCard";
 
 interface SearchModalProps {
@@ -111,7 +112,7 @@ export const SearchModal: React.FC<SearchModalProps> = ({
                       Looking for a shade match or routine help?
                     </h5>
                     <p className="text-[11px] text-[#6f6a60]">
-                      WhatsApp our beauty consultant directly at 055 964 0640.
+                      WhatsApp our beauty consultant directly at {primaryPhone.display}.
                     </p>
                   </div>
                 </div>

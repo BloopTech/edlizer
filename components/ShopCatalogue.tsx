@@ -170,7 +170,7 @@ export const ShopCatalogue: React.FC<ShopCatalogueProps> = ({
               <p className="mt-5 text-[15px] sm:text-base text-[#6f6a60] font-light leading-relaxed max-w-lg">
                 Every piece sourced straight from the house that makes it — from
                 high-coverage complexion to clinical skincare, across{" "}
-                {departmentGroups.reduce((n, g) => n + g.departments.length, 0)} departments.
+                {departmentGroups.reduce((n, g) => n + g.departments.length, 0)} categories.
               </p>
             </div>
 
@@ -331,7 +331,7 @@ export const ShopCatalogue: React.FC<ShopCatalogueProps> = ({
                   Nothing matches those filters
                 </p>
                 <p className="text-[14px] text-[#6f6a60] mt-2 font-light">
-                  Try widening the price range or clearing a department.
+                  Try widening the price range or clearing a category.
                 </p>
                 <button
                   onClick={clearAll}

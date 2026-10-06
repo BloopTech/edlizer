@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { LegalPage } from "@/components/LegalPage";
-import { siteDetails } from "@/lib/site";
+import { siteDetails, allPhonesDisplay } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Returns & Exchanges | Edlizer Beauty",
@@ -59,7 +59,7 @@ export default function ReturnsPage() {
         {
           heading: "How to start a return",
           body: [
-            `Message us on WhatsApp at ${siteDetails.phone.display} or email ${siteDetails.emails.general} with your order details and a photo of the item. We will confirm whether it qualifies and arrange collection or drop-off.`,
+            `Message us on WhatsApp at ${allPhonesDisplay} or email ${siteDetails.email} with your order details and a photo of the item. We will confirm whether it qualifies and arrange collection or drop-off.`,
             "Approved refunds are issued to your original payment method, or as mobile money, within five working days of us receiving the item.",
           ],
         },

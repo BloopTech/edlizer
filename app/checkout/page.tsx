@@ -16,7 +16,7 @@ import {
   Banknote,
 } from "lucide-react";
 import { useStore } from "@/components/StoreShell";
-import { siteDetails } from "@/lib/site";
+import { siteDetails, allPhonesDisplay } from "@/lib/site";
 
 const DELIVERY = [
   {
@@ -96,7 +96,7 @@ export default function CheckoutPage() {
           <p className="text-[15px] text-[#6f6a60] font-light leading-relaxed mt-4">
             Your reference is{" "}
             <span className="font-medium text-[#171512] tabular-nums">{placed}</span>.
-            We will message you on {siteDetails.phone.display} to confirm payment
+            We will message you on {allPhonesDisplay} to confirm payment
             and delivery — usually within the hour during opening times.
           </p>
 

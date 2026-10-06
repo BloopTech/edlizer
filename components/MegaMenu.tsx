@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { Product } from "./ProductCard";
+import { siteDetails, allPhonesDisplay } from "@/lib/site";
 import {
   Sparkles,
   Flame,
@@ -187,7 +188,7 @@ export const MegaMenu: React.FC<MegaMenuProps> = ({
               <div className="flex items-center justify-between pb-3 mb-2 border-b border-[#e6e0d3]/60">
                 <span className="text-[11px] font-bold uppercase tracking-[0.14em] text-[#6f6a60] flex items-center gap-2">
                   <span className="w-2 h-2 rounded-full bg-[#C58E2A]" />
-                  All Departments (10)
+                  All Categories (10)
                 </span>
                 <span className="text-[10px] text-[#A49E91] font-sans">100% Genuine</span>
               </div>
@@ -436,10 +437,11 @@ export const MegaMenu: React.FC<MegaMenuProps> = ({
 
               <div className="mt-4 pt-4 border-t border-[#e6e0d3]">
                 <div className="text-xs font-semibold text-[#171512]">
-                  Mondays - Saturdays, 9am - 5pm
+                  {siteDetails.hours.days}, {siteDetails.hours.time}
                 </div>
                 <div className="text-xs text-[#6f6a60]">
-                  Direct Boutique Line: <strong className="text-[#171512]">055 964 0640</strong>
+                  Direct Boutique Line:{" "}
+                  <strong className="text-[#171512]">{allPhonesDisplay}</strong>
                 </div>
               </div>
             </div>

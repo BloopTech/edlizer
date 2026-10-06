@@ -51,7 +51,7 @@ export const ContactForm: React.FC = () => {
         .join("\n");
 
       const href =
-        `mailto:${siteDetails.emails.general}` +
+        `mailto:${siteDetails.email}` +
         `?subject=${encodeURIComponent(`[${form.subject}] ${form.name}`)}` +
         `&body=${encodeURIComponent(body)}`;
 
@@ -80,10 +80,10 @@ export const ContactForm: React.FC = () => {
           Send the draft and we will come back to you within one working day. If
           nothing opened, write to us directly at{" "}
           <a
-            href={`mailto:${siteDetails.emails.general}`}
+            href={`mailto:${siteDetails.email}`}
             className="text-[#C58E2A] hover:text-[#171512] transition-colors"
           >
-            {siteDetails.emails.general}
+            {siteDetails.email}
           </a>
           .
         </p>
@@ -181,7 +181,7 @@ export const ContactForm: React.FC = () => {
         <p className="flex items-center gap-2 text-[13px] text-[#c72f5e]">
           <AlertCircle className="w-4 h-4 shrink-0" />
           Something went wrong. Please email us directly at{" "}
-          {siteDetails.emails.general}.
+          {siteDetails.email}.
         </p>
       )}
 

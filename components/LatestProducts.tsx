@@ -58,7 +58,7 @@ export const LatestProducts: React.FC<LatestProductsProps> = ({
             href="/shop"
             className="inline-flex items-center gap-2 bg-[#171512] hover:bg-[#C58E2A] text-white text-xs sm:text-sm font-semibold uppercase tracking-[0.14em] px-8 py-4 rounded-full transition-all shadow-md"
           >
-            <span>Explore All 10 Departments</span>
+            <span>Explore All 10 Categories</span>
             <ArrowRight className="w-4 h-4" />
           </Link>
         </div>

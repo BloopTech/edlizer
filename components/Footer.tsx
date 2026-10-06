@@ -13,6 +13,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { Logo } from "./Logo";
+import { siteDetails } from "@/lib/site";
 
 export const Footer: React.FC = () => {
   const [firstName, setFirstName] = useState("");
@@ -114,30 +115,34 @@ export const Footer: React.FC = () => {
             <div className="space-y-2.5 text-xs text-[#a49e91]">
               <div className="flex items-center gap-3">
                 <Clock className="w-4 h-4 text-[#C58E2A] shrink-0" />
-                <span>Hours: Mondays - Saturdays, 9am - 5pm</span>
+                <span>Hours: {siteDetails.hours.days}, {siteDetails.hours.time}</span>
               </div>
               <div className="flex items-center gap-3">
                 <Phone className="w-4 h-4 text-[#C58E2A] shrink-0" />
-                <span>
+                <span className="flex flex-wrap gap-x-1.5">
                   Phone:{" "}
-                  <a href="tel:0559640640" className="text-white hover:text-[#C58E2A] font-semibold">
-                    055 964 0640
-                  </a>
+                  {siteDetails.phones.map((phone, i) => (
+                    <span key={phone.tel}>
+                      <a
+                        href={`tel:${phone.tel}`}
+                        className="text-white hover:text-[#C58E2A] font-semibold"
+                      >
+                        {phone.display}
+                      </a>
+                      {i < siteDetails.phones.length - 1 ? " /" : ""}
+                    </span>
+                  ))}
                 </span>
               </div>
               <div className="flex items-start gap-3">
                 <Mail className="w-4 h-4 text-[#C58E2A] shrink-0 mt-0.5" />
-                <div className="space-y-0.5">
-                  <div>
-                    <a href="mailto:admin@edlizerbeauty.com" className="hover:text-white">
-                      admin@edlizerbeauty.com
-                    </a>
-                  </div>
-                  <div>
-                    <a href="mailto:Edlizerbeauty@gmail.com" className="hover:text-white">
-                      Edlizerbeauty@gmail.com
-                    </a>
-                  </div>
+                <div>
+                  <a
+                    href={`mailto:${siteDetails.email}`}
+                    className="hover:text-white"
+                  >
+                    {siteDetails.email}
+                  </a>
                 </div>
               </div>
             </div>
@@ -151,7 +156,7 @@ export const Footer: React.FC = () => {
             <ul className="space-y-2.5 text-xs tracking-wider uppercase text-[#a49e91]">
               <li>
                 <Link href="/shop" className="hover:text-[#E3B358] transition-colors">
-                  Shop All Departments
+                  Shop All Categories
                 </Link>
               </li>
               <li>
@@ -180,7 +185,7 @@ export const Footer: React.FC = () => {
           {/* Column 3: Department Categories */}
           <div className="lg:col-span-2 space-y-4">
             <h4 className="font-display text-lg font-medium text-white tracking-wide">
-              Departments
+              Categories
             </h4>
             <ul className="space-y-2.5 text-xs tracking-wider uppercase text-[#a49e91]">
               <li>
@@ -236,7 +241,7 @@ export const Footer: React.FC = () => {
           <div className="flex items-center gap-5 text-[#a49e91]">
             <span className="text-[11px] uppercase tracking-wider text-[#6f6a60]">Connect With Us:</span>
             <a
-              href="https://www.instagram.com/edlizer_beauty_outlet"
+              href={siteDetails.social.instagram.url}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-1.5 hover:text-white transition-colors"
@@ -247,19 +252,19 @@ export const Footer: React.FC = () => {
                 <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
                 <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
               </svg>
-              <span>@edlizer_beauty_outlet</span>
+              <span>{siteDetails.social.instagram.handle}</span>
             </a>
             <a
-              href="https://www.facebook.com/profile.php?id=100042219142355"
+              href={siteDetails.social.tiktok.url}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-1.5 hover:text-white transition-colors"
-              title="Facebook"
+              title="TikTok"
             >
-              <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
-                <path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 4.84 3.44 8.87 8 9.8V15H8v-3h2V9.5C10 7.57 11.57 6 13.5 6H16v3h-2c-.55 0-1 .45-1 1v2h3v3h-3v6.95c5.05-.5 9-4.76 9-9.95z" />
+              <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24" aria-hidden>
+                <path d="M16.6 5.82A4.28 4.28 0 0 1 15.54 3h-3.09v12.4a2.59 2.59 0 0 1-2.59 2.5 2.59 2.59 0 1 1 .73-5.07V9.68a5.68 5.68 0 0 0-.73-.05A5.65 5.65 0 1 0 15.54 15.4V9.01a7.35 7.35 0 0 0 4.3 1.38V7.3a4.3 4.3 0 0 1-3.24-1.48z" />
               </svg>
-              <span>Facebook Profile</span>
+              <span>{siteDetails.social.tiktok.handle}</span>
             </a>
           </div>
 

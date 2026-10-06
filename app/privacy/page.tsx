@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { LegalPage } from "@/components/LegalPage";
-import { siteDetails } from "@/lib/site";
+import { siteDetails, allPhonesDisplay } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Privacy Policy | Edlizer Beauty",
@@ -54,7 +54,7 @@ export default function PrivacyPage() {
         {
           heading: "Your control over it",
           body: [
-            `You can ask to see what we hold about you, correct anything wrong, or have it deleted entirely. Write to ${siteDetails.emails.general} and we will action it within thirty days.`,
+            `You can ask to see what we hold about you, correct anything wrong, or have it deleted entirely. Write to ${siteDetails.email} and we will action it within thirty days.`,
             "Deleting your data may mean we can no longer look up a past order for you, so it is worth downloading anything you need first.",
           ],
         },
@@ -67,7 +67,7 @@ export default function PrivacyPage() {
         {
           heading: "Contact",
           body: [
-            `For anything to do with your data, reach us at ${siteDetails.emails.general} or ${siteDetails.phone.display}, ${siteDetails.hours.days.toLowerCase()}, ${siteDetails.hours.time}.`,
+            `For anything to do with your data, reach us at ${siteDetails.email} or ${allPhonesDisplay}, ${siteDetails.hours.days.toLowerCase()}, ${siteDetails.hours.time}.`,
           ],
         },
       ]}

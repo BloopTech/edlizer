@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Phone, Mail, Clock, MapPin, MessageCircle, AtSign, Truck } from "lucide-react";
 import { ContactForm } from "@/components/ContactForm";
-import { siteDetails } from "@/lib/site";
+import { siteDetails, allPhonesDisplay, primaryPhone } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Contact Us | Edlizer Beauty",
@@ -34,24 +34,24 @@ export default function ContactPage() {
     {
       icon: Phone,
       label: "Call us",
-      value: siteDetails.phone.display,
-      href: `tel:${siteDetails.phone.tel}`,
+      value: allPhonesDisplay,
+      href: `tel:${primaryPhone.tel}`,
       note: `${siteDetails.hours.days}, ${siteDetails.hours.time}`,
     },
     {
       icon: MessageCircle,
       label: "WhatsApp",
-      value: siteDetails.phone.display,
-      href: siteDetails.phone.whatsapp,
+      value: primaryPhone.display,
+      href: primaryPhone.whatsapp,
       note: "Fastest for shade matching and order updates",
       external: true,
     },
     {
       icon: Mail,
       label: "Email",
-      value: siteDetails.emails.general,
-      href: `mailto:${siteDetails.emails.general}`,
-      note: `Also on ${siteDetails.emails.alternate}`,
+      value: siteDetails.email,
+      href: `mailto:${siteDetails.email}`,
+      note: "We reply within one working day",
     },
     {
       icon: AtSign,
