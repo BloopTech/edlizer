@@ -16,28 +16,8 @@ import {
   Banknote,
 } from "lucide-react";
 import { useStore } from "@/components/StoreShell";
-import { siteDetails, allPhonesDisplay } from "@/lib/site";
-
-const DELIVERY = [
-  {
-    id: "accra",
-    label: "Accra express",
-    note: "Dispatched today, delivered within 24 hours",
-    fee: 30,
-  },
-  {
-    id: "nationwide",
-    label: "Nationwide",
-    note: "Two to three working days anywhere in Ghana",
-    fee: 60,
-  },
-  {
-    id: "pickup",
-    label: "Collect in store",
-    note: `${siteDetails.hours.days}, ${siteDetails.hours.time}`,
-    fee: 0,
-  },
-] as const;
+import { useSiteContent } from "@/components/SiteContentProvider";
+import { allPhonesDisplay } from "@/lib/site";
 
 const PAYMENT = [
   { id: "momo", label: "Mobile Money", note: "MTN, Telecel or AirtelTigo", icon: Smartphone },
@@ -47,6 +27,7 @@ const PAYMENT = [
 
 export default function CheckoutPage() {
   const { cartItems, subtotal, updateQuantity, removeItem, clearCart } = useStore();
+  const { details: siteDetails, delivery: DELIVERY } = useSiteContent();
 
   const [delivery, setDelivery] = useState<string>(DELIVERY[0].id);
   const [payment, setPayment] = useState<string>(PAYMENT[0].id);
@@ -96,7 +77,7 @@ export default function CheckoutPage() {
           <p className="text-[15px] text-[#6f6a60] font-light leading-relaxed mt-4">
             Your reference is{" "}
             <span className="font-medium text-[#171512] tabular-nums">{placed}</span>.
-            We will message you on {allPhonesDisplay} to confirm payment
+            We will message you on {allPhonesDisplay(siteDetails)} to confirm payment
             and delivery — usually within the hour during opening times.
           </p>
 

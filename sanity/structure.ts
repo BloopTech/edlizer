@@ -30,10 +30,24 @@ const DEPARTMENTS = [
   "Makeup Wipes & Removers",
 ];
 
-export const structure: StructureResolver = (S) =>
-  S.list()
+export const structure: StructureResolver = (S) => {
+  /** Opens the one document of a singleton type straight in the editor. */
+  const singleton = (type: string, title: string) =>
+    S.listItem()
+      .id(type)
+      .title(title)
+      .schemaType(type)
+      .child(S.document().schemaType(type).documentId(type).title(title));
+
+  return S.list()
     .title("Edlizer Beauty")
     .items([
+      singleton("siteSettings", "Store details"),
+      singleton("homepage", "Homepage"),
+      singleton("shopInfo", "Delivery & FAQs"),
+
+      S.divider(),
+
       S.listItem()
         .title("All products")
         .child(
@@ -125,3 +139,4 @@ export const structure: StructureResolver = (S) =>
             ])
         ),
     ]);
+};

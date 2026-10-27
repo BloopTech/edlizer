@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { LegalPage } from "@/components/LegalPage";
-import { siteDetails, allPhonesDisplay } from "@/lib/site";
+import { getSiteContent } from "@/sanity/content";
+import { allPhonesDisplay } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Returns & Exchanges | Edlizer Beauty",
@@ -8,7 +9,8 @@ export const metadata: Metadata = {
     "How returns, exchanges and refunds work at Edlizer Beauty, including our hygiene policy on opened cosmetics.",
 };
 
-export default function ReturnsPage() {
+export default async function ReturnsPage() {
+  const { details: siteDetails } = await getSiteContent();
   return (
     <LegalPage
       title="Returns & Exchanges"
@@ -59,7 +61,7 @@ export default function ReturnsPage() {
         {
           heading: "How to start a return",
           body: [
-            `Message us on WhatsApp at ${allPhonesDisplay} or email ${siteDetails.email} with your order details and a photo of the item. We will confirm whether it qualifies and arrange collection or drop-off.`,
+            `Message us on WhatsApp at ${allPhonesDisplay(siteDetails)} or email ${siteDetails.email} with your order details and a photo of the item. We will confirm whether it qualifies and arrange collection or drop-off.`,
             "Approved refunds are issued to your original payment method, or as mobile money, within five working days of us receiving the item.",
           ],
         },

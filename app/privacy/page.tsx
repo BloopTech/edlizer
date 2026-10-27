@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { LegalPage } from "@/components/LegalPage";
-import { siteDetails, allPhonesDisplay } from "@/lib/site";
+import { getSiteContent } from "@/sanity/content";
+import { allPhonesDisplay } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Privacy Policy | Edlizer Beauty",
@@ -8,7 +9,8 @@ export const metadata: Metadata = {
     "What data Edlizer Beauty collects, why we collect it, and the control you have over it.",
 };
 
-export default function PrivacyPage() {
+export default async function PrivacyPage() {
+  const { details: siteDetails } = await getSiteContent();
   return (
     <LegalPage
       title="Privacy Policy"
@@ -67,7 +69,7 @@ export default function PrivacyPage() {
         {
           heading: "Contact",
           body: [
-            `For anything to do with your data, reach us at ${siteDetails.email} or ${allPhonesDisplay}, ${siteDetails.hours.days.toLowerCase()}, ${siteDetails.hours.time}.`,
+            `For anything to do with your data, reach us at ${siteDetails.email} or ${allPhonesDisplay(siteDetails)}, ${siteDetails.hours.days.toLowerCase()}, ${siteDetails.hours.time}.`,
           ],
         },
       ]}

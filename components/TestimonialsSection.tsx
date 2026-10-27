@@ -2,27 +2,11 @@
 
 import React from "react";
 import { Star, Quote, CheckCircle2 } from "lucide-react";
-
-export const testimonialsData = [
-  {
-    author: "Marilyn",
-    rating: 5,
-    role: "Verified Beauty Enthusiast • Accra",
-    quote:
-      "Edlizer is a one-stop shop for me. I get everything from skincare to makeup in one place. It saves me so much time and hassle.",
-    purchased: "NARS Foundation & Simple Toner",
-  },
-  {
-    author: "Maame",
-    rating: 5,
-    role: "Loyal Client • Kumasi",
-    quote:
-      "I am quite particular about shopping online, So when I tried out Edlizer and realized how quality her products were, I never shop anywhere else.",
-    purchased: "Good Molecules Discoloration Serum",
-  },
-];
+import { useSiteContent } from "@/components/SiteContentProvider";
 
 export const TestimonialsSection: React.FC = () => {
+  const { testimonials } = useSiteContent();
+
   return (
     <section id="testimonials" className="py-20 bg-[#f7f4ee] border-b border-[#e6e0d3]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -41,7 +25,7 @@ export const TestimonialsSection: React.FC = () => {
 
         {/* 2 Testimonial Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
-          {testimonialsData.map((t, idx) => (
+          {testimonials.map((t, idx) => (
             <div
               key={idx}
               className="bg-white rounded-3xl p-8 sm:p-10 border border-[#e6e0d3] shadow-md flex flex-col justify-between relative group hover:border-[#C58E2A]/60 transition-all duration-300"

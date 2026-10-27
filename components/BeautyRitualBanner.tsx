@@ -3,61 +3,10 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { Sparkles, ArrowRight, Eye, X } from "lucide-react";
-
-export const galleryImages = [
-  {
-    url: "/assets/products/nars-radiant-foundation/1.jpg",
-    title: "NARS Radiant Foundation",
-    tag: "@edlizer_beauty_outlet",
-  },
-  {
-    url: "/assets/products/beauty-creations-setting-powder/1.jpg",
-    title: "Bye Filter Setting Powder",
-    tag: "NARS & Fenty Glow",
-  },
-  {
-    url: "/assets/products/good-molecules-discoloration-serum/1.webp",
-    title: "Discoloration Correcting Serum",
-    tag: "Good Molecules Serum",
-  },
-  {
-    url: "/assets/products/studio-london-brush-set/1.png",
-    title: "Ultimate Brush Collection",
-    tag: "Vanity Essentials",
-  },
-  {
-    url: "/assets/products/nyx-lip-lingerie-ruffle-trim/1.webp",
-    title: "Lip Lingerie Liquid Lipstick",
-    tag: "Setting Powder Magic",
-  },
-  {
-    url: "/assets/products/simple-soothing-facial-toner/1.jpg",
-    title: "Soothing Facial Toner",
-    tag: "Hydration Ritual",
-  },
-  {
-    url: "/assets/products/nickak-4in1-lip-kit/1.webp",
-    title: "NicKak 4in1 Lip Kit",
-    tag: "Plump & Nourish",
-  },
-  {
-    url: "/assets/products/cosrx-aloe-suncream/1.jpg",
-    title: "Aloe Soothing Sun Cream",
-    tag: "Simple Toner Gentle Care",
-  },
-  {
-    url: "/assets/products/ginseng-essence-water/1.jpg",
-    title: "Ginseng Essence Water",
-    tag: "Skin Barrier Restored",
-  },
-  {
-    url: "/assets/products/good-molecules-clarify-cleanse-bar/1.jpeg",
-    title: "Clarify & Cleanse Bar",
-    tag: "#BeWhoeverYouWant",
-  },
-];
+import { useSiteContent } from "@/components/SiteContentProvider";
 
 export const BeautyRitualBanner: React.FC = () => {
+  const { gallery: galleryImages, details } = useSiteContent();
   const [activePhoto, setActivePhoto] = useState<string | null>(null);
 
   return (
@@ -93,7 +42,7 @@ export const BeautyRitualBanner: React.FC = () => {
               </Link>
 
               <a
-                href="https://www.instagram.com/edlizer_beauty_outlet"
+                href={details.social.instagram.url}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white text-xs sm:text-sm font-semibold uppercase tracking-[0.12em] px-7 py-4 rounded-full backdrop-blur-md transition-colors"
@@ -103,7 +52,7 @@ export const BeautyRitualBanner: React.FC = () => {
                   <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
                   <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
                 </svg>
-                <span>Follow @edlizer_beauty_outlet</span>
+                <span>Follow {details.social.instagram.handle}</span>
               </a>
             </div>
           </div>

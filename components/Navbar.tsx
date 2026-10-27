@@ -4,7 +4,8 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Product } from "./ProductCard";
-import { siteDetails, allPhonesDisplay } from "@/lib/site";
+import { useSiteContent } from "@/components/SiteContentProvider";
+import { allPhonesDisplay } from "@/lib/site";
 import {
   Search,
   ShoppingBag,
@@ -39,6 +40,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   onAddToCart,
   onSelectCategory,
 }) => {
+  const { details: siteDetails } = useSiteContent();
   const { user } = useAuth();
   const pathname = usePathname();
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
@@ -476,7 +478,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             {/* Bottom Contact & Hours */}
             <div className="p-4 bg-[#f7f4ee] border-t border-[#e6e0d3] space-y-2 text-xs">
               <div className="font-semibold text-[#171512]">
-                📞 {allPhonesDisplay}
+                📞 {allPhonesDisplay(siteDetails)}
               </div>
               <div className="text-[#6f6a60] text-[11px]">
                 {siteDetails.hours.days}, {siteDetails.hours.time}

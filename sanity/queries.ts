@@ -40,3 +40,37 @@ export const productBySlugQuery = groq`
     ${productFields}
   }
 `;
+
+/**
+ * The three singleton content documents, shaped to match `SiteContent` in
+ * lib/site.ts. Missing or empty fields are filled from the defaults in
+ * sanity/content.ts, so a half-finished document never blanks the site.
+ */
+export const siteContentQuery = groq`{
+  "settings": *[_id == "siteSettings"][0]{
+    phones, email, hours, location, instagram, tiktok
+  },
+  "homepage": *[_id == "homepage"][0]{
+    "slides": heroSlides[defined(image.asset)]{
+      "src": image.asset->url,
+      "file": image.asset->originalFilename,
+      "hotspot": image.hotspot,
+      alt, kicker, lead, accent
+    },
+    "body": heroBody,
+    primaryCta,
+    secondaryCta,
+    "pillars": pillars[]{ title, copy },
+    "testimonials": testimonials[]{ author, role, quote },
+    // Sized for the gallery tiles and lightbox; originals can run to several MB.
+    "gallery": ritualGallery[defined(image.asset)]{
+      "url": image.asset->url + "?w=1200&auto=format",
+      title,
+      tag
+    }
+  },
+  "shopInfo": *[_id == "shopInfo"][0]{
+    "delivery": deliveryOptions[]{ "id": _key, label, note, fee },
+    "faqs": faqs[]{ "q": question, "a": answer }
+  }
+}`;

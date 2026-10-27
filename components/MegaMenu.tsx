@@ -3,7 +3,8 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { Product } from "./ProductCard";
-import { siteDetails, allPhonesDisplay } from "@/lib/site";
+import { useSiteContent } from "@/components/SiteContentProvider";
+import { allPhonesDisplay } from "@/lib/site";
 import {
   Sparkles,
   Flame,
@@ -166,6 +167,7 @@ export const MegaMenu: React.FC<MegaMenuProps> = ({
   onAddToCart,
   onSelectCategory,
 }) => {
+  const { details: siteDetails } = useSiteContent();
   const [hoveredCategory, setHoveredCategory] = useState<CategoryData>(
     shopCategories[6] // Default to Makeup
   );
@@ -441,7 +443,7 @@ export const MegaMenu: React.FC<MegaMenuProps> = ({
                 </div>
                 <div className="text-xs text-[#6f6a60]">
                   Direct Boutique Line:{" "}
-                  <strong className="text-[#171512]">{allPhonesDisplay}</strong>
+                  <strong className="text-[#171512]">{allPhonesDisplay(siteDetails)}</strong>
                 </div>
               </div>
             </div>

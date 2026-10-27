@@ -2,47 +2,32 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Phone, Mail, Clock, MapPin, MessageCircle, AtSign, Truck } from "lucide-react";
 import { ContactForm } from "@/components/ContactForm";
-import { siteDetails, allPhonesDisplay, primaryPhone } from "@/lib/site";
+import { getSiteContent } from "@/sanity/content";
+import { allPhonesDisplay, primaryPhone } from "@/lib/site";
 
-export const metadata: Metadata = {
-  title: "Contact Us | Edlizer Beauty",
-  description:
-    "Reach Edlizer Beauty by phone, WhatsApp or email. Open Mondays to Saturdays, 9am–5pm, with nationwide delivery across Ghana.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const { details } = await getSiteContent();
+  return {
+    title: "Contact Us | Edlizer Beauty",
+    description: `Reach Edlizer Beauty by phone, WhatsApp or email. Open ${details.hours.days}, ${details.hours.time}, with nationwide delivery across Ghana.`,
+  };
+}
 
-const FAQS = [
-  {
-    q: "How long does delivery take?",
-    a: "Accra orders are dispatched the same working day and usually arrive within 24 hours. Elsewhere in Ghana, allow two to three working days.",
-  },
-  {
-    q: "Can you help me find my foundation shade?",
-    a: "Yes — message us on WhatsApp with a photo of your face in natural daylight (no filter) and the shade you currently wear in any other brand. We will match you against what is in stock.",
-  },
-  {
-    q: "Are your products authentic?",
-    a: "Every item is sourced directly from the brand or its authorised distributor and batch-verified before it reaches our shelves. If anything is ever found not to be genuine, we replace it or refund you in full.",
-  },
-  {
-    q: "Do you take returns?",
-    a: "Unopened items in original packaging can be returned within seven days. For hygiene reasons opened cosmetics cannot be returned unless the product is faulty.",
-  },
-];
-
-export default function ContactPage() {
+export default async function ContactPage() {
+  const { details: siteDetails, faqs } = await getSiteContent();
   const channels = [
     {
       icon: Phone,
       label: "Call us",
-      value: allPhonesDisplay,
-      href: `tel:${primaryPhone.tel}`,
+      value: allPhonesDisplay(siteDetails),
+      href: `tel:${primaryPhone(siteDetails).tel}`,
       note: `${siteDetails.hours.days}, ${siteDetails.hours.time}`,
     },
     {
       icon: MessageCircle,
       label: "WhatsApp",
-      value: primaryPhone.display,
-      href: primaryPhone.whatsapp,
+      value: primaryPhone(siteDetails).display,
+      href: primaryPhone(siteDetails).whatsapp,
       note: "Fastest for shade matching and order updates",
       external: true,
     },
@@ -168,7 +153,7 @@ export default function ContactPage() {
                 Before you write
               </h3>
               <dl className="space-y-5">
-                {FAQS.map(({ q, a }) => (
+                {faqs.map(({ q, a }) => (
                   <div
                     key={q}
                     className="pb-5 border-b border-[#e6e0d3] last:border-b-0 last:pb-0"

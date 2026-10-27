@@ -9,81 +9,42 @@ import {
   Award,
   Heart,
 } from "lucide-react";
-import { siteAssets } from "@/lib/assets";
+import { useSiteContent } from "@/components/SiteContentProvider";
 
 
 /**
- * Hero copy is kept as a single structured object so it can be lifted into a
- * Sanity `heroSection` document later without touching the layout below.
+ * Art direction for the supplied campaign photographs, keyed by filename so it
+ * still applies once they are served from Sanity's CDN. Each frame carries its
+ * own focal point because the crops differ (a tall portrait, a landscape, a
+ * full-length) — object-position keeps the face out of the copy and away from
+ * the frame edges. Photos uploaded later use the Studio hotspot instead.
  */
-export const heroContent = {
-  /**
-   * Campaign slider. Each frame carries its own focal point because the crops
-   * differ (a tall portrait, a landscape, a full-length) — object-position
-   * keeps the face out of the copy and away from the frame edges.
-   */
-  slides: [
-    {
-      src: siteAssets.hero.mainImage,
-      alt: "Edlizer Beauty campaign portrait — model wearing a weightless full-coverage foundation",
-      position: "object-[52%_12%] lg:object-[50%_8%]",
-      frame: "",
-    },
-    {
-      src: siteAssets.hero.afroGlow,
-      alt: "Edlizer Beauty campaign portrait — luminous complexion with sculptural gold earrings",
-      position: "object-[46%_38%] lg:object-[48%_42%]",
-      frame: "",
-    },
-    {
-      src: siteAssets.hero.goldCouture,
-      alt: "Edlizer Beauty campaign portrait — gold couture and graphic liner",
-      position: "object-[50%_10%] lg:object-[50%_12%]",
-      frame: "origin-top scale-[1.8] lg:scale-100",
-    },
-  ],
-  /**
-   * One headline per campaign frame. The rotation is driven by the slider, so
-   * the words change with the photograph rather than on a timer of their own.
-   */
-  headlines: [
-    { kicker: "Ghana's premier beauty house", lead: "Beauty On", accent: "Your Terms" },
-    { kicker: "100% genuine, always", lead: "Real Products.", accent: "Real Results." },
-    { kicker: "Ivory to Ebony Dark", lead: "Your Shade", accent: "Exists Here" },
-  ],
-  body:
-    "We empower you to express yourself freely and be whoever you want to be. Unleash your inner beauty with our wide range of authentic cosmetics and clinical skincare sourced straight from renowned global houses.",
-  primaryCta: { label: "Shop Cosmetics", href: "#featured-products" },
-  secondaryCta: { label: "Skincare Highlights", href: "#skincare-highlights" },
-  pillars: [
-    {
-      icon: Award,
-      title: "Genuine Quality Products",
-      copy:
-        "We source products straight from renowned international brands. Genuine products you can trust.",
-    },
-    {
-      icon: Heart,
-      title: "Inclusive Beauty",
-      copy:
-        "We believe beauty is for everyone, regardless of age, gender, or skin tone.",
-    },
-    {
-      icon: Sparkles,
-      title: "Personalized Solutions",
-      copy:
-        "Beauty is personal. We offer solutions tailored to your unique needs and preferences.",
-    },
-  ],
-} as const;
+const ART_DIRECTION: Record<string, { position: string; frame: string }> = {
+  "hero-model.jpg": {
+    position: "object-[52%_12%] lg:object-[50%_8%]",
+    frame: "",
+  },
+  "hero-afro-glow.jpg": {
+    position: "object-[46%_38%] lg:object-[48%_42%]",
+    frame: "",
+  },
+  "hero-gold-couture.jpg": {
+    position: "object-[50%_10%] lg:object-[50%_12%]",
+    frame: "origin-top scale-[1.8] lg:scale-100",
+  },
+};
+
+/** Icons for the three promises, in order; the copy comes from the Studio. */
+const PILLAR_ICONS = [Award, Heart, Sparkles];
 
 const SLIDE_DURATION_MS = 6500;
 
 export const HeroSection: React.FC = () => {
+  const { hero: heroContent } = useSiteContent();
   const [activeSlide, setActiveSlide] = useState(0);
 
-  const headline =
-    heroContent.headlines[activeSlide % heroContent.headlines.length];
+  // Each slide carries its own headline, so the words change with the photograph.
+  const headline = heroContent.slides[activeSlide % heroContent.slides.length];
 
   /**
    * Autoplay, unless the visitor has asked for reduced motion. Keyed on the
@@ -98,7 +59,7 @@ export const HeroSection: React.FC = () => {
       SLIDE_DURATION_MS
     );
     return () => window.clearTimeout(timer);
-  }, [activeSlide]);
+  }, [activeSlide, heroContent.slides.length]);
 
   return (
     <section
@@ -121,7 +82,11 @@ export const HeroSection: React.FC = () => {
             className="hero-fade absolute inset-0"
             style={{ animationDuration: "1800ms" }}
           >
-            {heroContent.slides.map((slide, i) => (
+            {heroContent.slides.map((slide, i) => {
+              const art = slide.objectPosition
+                ? undefined
+                : ART_DIRECTION[slide.file ?? slide.src.split("/").pop() ?? ""];
+              return (
               <div
                 key={slide.src}
                 aria-hidden={i !== activeSlide}
@@ -135,7 +100,7 @@ export const HeroSection: React.FC = () => {
                   the top of the photograph, object-position has no room to work,
                   so a top-anchored zoom drops the face clear of the navigation.
                 */}
-                <div className={`absolute inset-0 ${slide.frame}`}>
+                <div className={`absolute inset-0 ${art?.frame ?? ""}`}>
                   <div className="hero-drift absolute inset-0">
                     <Image
                       src={slide.src}
@@ -144,12 +109,14 @@ export const HeroSection: React.FC = () => {
                       preload={i === 0 || undefined}
                       sizes="(min-width: 1024px) 74vw, 100vw"
                       quality={90}
-                      className={`object-cover contrast-[1.04] saturate-[1.03] ${slide.position}`}
+                      className={`object-cover contrast-[1.04] saturate-[1.03] ${art?.position ?? ""}`}
+                      style={slide.objectPosition ? { objectPosition: slide.objectPosition } : undefined}
                     />
                   </div>
                 </div>
               </div>
-            ))}
+              );
+            })}
           </div>
 
           {/* Desktop: the left edge of the frame dissolves into the espresso field */}
@@ -280,7 +247,9 @@ export const HeroSection: React.FC = () => {
           className="hero-rise mt-11 lg:mt-12 pt-7 border-t border-white/12 grid grid-cols-1 sm:grid-cols-3 gap-7 sm:gap-8 lg:gap-10 lg:max-w-3xl xl:max-w-4xl"
           style={{ animationDelay: "760ms" }}
         >
-          {heroContent.pillars.map(({ icon: Icon, title, copy }) => (
+          {heroContent.pillars.map(({ title, copy }, i) => {
+            const Icon = PILLAR_ICONS[i % PILLAR_ICONS.length];
+            return (
             <div key={title} className="flex items-start gap-3.5">
               <Icon className="w-4 h-4 text-[#C58E2A] mt-0.5 shrink-0" strokeWidth={1.75} />
               <div>
@@ -292,7 +261,8 @@ export const HeroSection: React.FC = () => {
                 </div>
               </div>
             </div>
-          ))}
+            );
+          })}
         </div>
       </div>
 

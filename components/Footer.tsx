@@ -13,9 +13,10 @@ import {
   Sparkles,
 } from "lucide-react";
 import { Logo } from "./Logo";
-import { siteDetails } from "@/lib/site";
+import { useSiteContent } from "@/components/SiteContentProvider";
 
 export const Footer: React.FC = () => {
+  const { details: siteDetails } = useSiteContent();
   const [firstName, setFirstName] = useState("");
   const [email, setEmail] = useState("");
   const [subscribed, setSubscribed] = useState(false);

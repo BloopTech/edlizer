@@ -1,35 +1,37 @@
 /**
- * One-off importer: pushes the built-in catalogue in lib/products.ts into
- * Sanity, uploading each local photograph as a Sanity image asset.
+ * Importer: pushes the built-in catalogue in lib/products.ts and the site
+ * content in lib/default-content.json (store details, homepage, delivery &
+ * FAQs) into Sanity, uploading each local photograph as a Sanity image asset.
  *
  * Usage:
- *   SANITY_WRITE_TOKEN=sk... node scripts/seed-sanity.mjs          # dry run
- *   SANITY_WRITE_TOKEN=sk... node scripts/seed-sanity.mjs --commit # write
+ *   node scripts/seed-sanity.mjs                       # dry run
+ *   node scripts/seed-sanity.mjs --commit              # write missing documents
+ *   node scripts/seed-sanity.mjs --commit --overwrite  # also replace existing ones
  *
- * Safe to re-run: documents use the product slug as a deterministic id, so a
- * second run updates rather than duplicating.
+ * The token is read from SANITY_WRITE_TOKEN, in the environment or .env.local.
+ *
+ * Safe to re-run: documents use deterministic ids, and without --overwrite a
+ * document that already exists is left alone — so edits made in the Studio
+ * are never clobbered by a second run.
  */
 import fs from "node:fs";
 import path from "node:path";
 import { createClient } from "@sanity/client";
 
 const COMMIT = process.argv.includes("--commit");
-const token = process.env.SANITY_WRITE_TOKEN;
+const OVERWRITE = process.argv.includes("--overwrite");
 
-const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID;
-const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET || "production";
-
-// Pull env from .env.local so the script needs no extra setup.
-if (!projectId) {
-  const envFile = path.join(process.cwd(), ".env.local");
-  if (fs.existsSync(envFile)) {
-    for (const line of fs.readFileSync(envFile, "utf8").split(/\r?\n/)) {
-      const m = line.match(/^\s*([A-Z0-9_]+)\s*=\s*(.*)\s*$/);
-      if (m) process.env[m[1]] ??= m[2];
-    }
+// Pull env from .env.local so the script needs no extra setup. Values already
+// in the environment win.
+const envFile = path.join(process.cwd(), ".env.local");
+if (fs.existsSync(envFile)) {
+  for (const line of fs.readFileSync(envFile, "utf8").split(/\r?\n/)) {
+    const m = line.match(/^\s*([A-Z0-9_]+)\s*=\s*(.*?)\s*$/);
+    if (m) process.env[m[1]] ??= m[2];
   }
 }
 
+const token = process.env.SANITY_WRITE_TOKEN;
 const PROJECT_ID = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID;
 const DATASET = process.env.NEXT_PUBLIC_SANITY_DATASET || "production";
 
@@ -40,7 +42,8 @@ if (!PROJECT_ID) {
 if (COMMIT && !token) {
   console.error(
     "Missing SANITY_WRITE_TOKEN.\n" +
-      "Create one at sanity.io/manage -> API -> Tokens, with Editor permission."
+      "Create one at sanity.io/manage -> API -> Tokens, with Editor permission,\n" +
+      "and add it to .env.local as SANITY_WRITE_TOKEN=..."
   );
   process.exit(1);
 }
@@ -109,20 +112,43 @@ const imageRef = (id) =>
     ? { _type: "image", asset: { _type: "reference", _ref: id } }
     : undefined;
 
-async function run() {
+/** Ids already in the dataset, so existing documents can be skipped. */
+async function existingIds(ids) {
+  const found = await client.fetch(`*[_id in $ids]._id`, { ids });
+  return new Set(found);
+}
+
+/** Writes a document unless it exists and --overwrite was not given. */
+async function write(doc, label, existing) {
+  if (existing.has(doc._id) && !OVERWRITE) {
+    console.log(`  - ${label}  (already in Sanity, kept)`);
+    return false;
+  }
+  // Drop undefined so Sanity does not store empty keys.
+  for (const k of Object.keys(doc)) if (doc[k] === undefined) delete doc[k];
+  if (COMMIT) {
+    await client.createOrReplace(doc);
+    console.log(`  ✓ ${label}`);
+  } else {
+    console.log(`  · ${label}`);
+  }
+  return true;
+}
+
+async function seedProducts() {
   const catalogue = readCatalogue();
-  console.log(
-    `${COMMIT ? "Importing" : "Dry run for"} ${catalogue.length} products ` +
-      `-> ${PROJECT_ID}/${DATASET}\n`
-  );
+  const existing = await existingIds(catalogue.map((e) => e.id));
+  console.log(`Products (${catalogue.length})`);
 
-  let created = 0;
-  let skippedImages = 0;
-
+  let written = 0;
   for (const entry of catalogue) {
-    const mainId = await uploadImage(entry.image);
-    if (!mainId) skippedImages++;
+    // Skip the uploads too when the document will not be written.
+    if (existing.has(entry.id) && !OVERWRITE) {
+      await write({ _id: entry.id }, entry.name, existing);
+      continue;
+    }
 
+    const mainId = await uploadImage(entry.image);
     const galleryIds = [];
     for (const g of entry.gallery ?? []) {
       const id = await uploadImage(g);
@@ -153,24 +179,109 @@ async function run() {
         ? galleryIds.map((id, i) => ({ ...imageRef(id), _key: `g${i}` }))
         : undefined,
     };
+    if (await write(doc, entry.name, existing)) written++;
+  }
+  return written;
+}
 
-    // Drop undefined so Sanity does not store empty keys.
-    for (const k of Object.keys(doc)) if (doc[k] === undefined) delete doc[k];
+async function seedContent() {
+  const content = JSON.parse(
+    fs.readFileSync(path.join(process.cwd(), "lib/default-content.json"), "utf8")
+  );
+  const existing = await existingIds(["siteSettings", "homepage", "shopInfo"]);
+  const key = (i) => `k${i}`;
+  console.log("\nSite content");
 
-    if (COMMIT) {
-      await client.createOrReplace(doc);
-      console.log(`  ✓ ${entry.name}`);
-    } else {
-      console.log(`  · ${entry.name}  (${entry.categories?.join(", ") || "no dept"})`);
+  const { details } = content;
+  await write(
+    {
+      _id: "siteSettings",
+      _type: "siteSettings",
+      phones: details.phones,
+      email: details.email,
+      hours: details.hours,
+      location: details.location,
+      instagram: details.social.instagram,
+      tiktok: details.social.tiktok,
+    },
+    "Store details",
+    existing
+  );
+
+  if (existing.has("homepage") && !OVERWRITE) {
+    await write({ _id: "homepage" }, "Homepage", existing);
+  } else {
+    const heroSlides = [];
+    for (const [i, s] of content.hero.slides.entries()) {
+      heroSlides.push({
+        _key: key(i),
+        _type: "heroSlide",
+        image: imageRef(await uploadImage(s.src)),
+        alt: s.alt,
+        kicker: s.kicker,
+        lead: s.lead,
+        accent: s.accent,
+      });
     }
-    created++;
+    const ritualGallery = [];
+    for (const [i, g] of content.gallery.entries()) {
+      ritualGallery.push({
+        _key: key(i),
+        _type: "galleryImage",
+        image: imageRef(await uploadImage(g.url)),
+        title: g.title,
+        tag: g.tag,
+      });
+    }
+    await write(
+      {
+        _id: "homepage",
+        _type: "homepage",
+        heroSlides,
+        heroBody: content.hero.body,
+        primaryCta: content.hero.primaryCta,
+        secondaryCta: content.hero.secondaryCta,
+        pillars: content.hero.pillars.map((p, i) => ({ _key: key(i), _type: "pillar", ...p })),
+        testimonials: content.testimonials.map((t, i) => ({ _key: key(i), _type: "testimonial", ...t })),
+        ritualGallery,
+      },
+      "Homepage (hero slider, testimonials, ritual gallery)",
+      existing
+    );
   }
 
-  console.log(
-    `\n${COMMIT ? "Imported" : "Would import"} ${created} products` +
-      (skippedImages ? `, ${skippedImages} without photography` : "")
+  await write(
+    {
+      _id: "shopInfo",
+      _type: "shopInfo",
+      deliveryOptions: content.delivery.map((d) => ({
+        // Keep the original ids as keys so checkout selections stay stable.
+        _key: d.id,
+        _type: "deliveryOption",
+        label: d.label,
+        note: d.note,
+        fee: d.fee,
+      })),
+      faqs: content.faqs.map((f, i) => ({
+        _key: key(i),
+        _type: "faq",
+        question: f.q,
+        answer: f.a,
+      })),
+    },
+    "Delivery & FAQs",
+    existing
   );
-  if (!COMMIT) console.log("Re-run with --commit to write to Sanity.");
+}
+
+async function run() {
+  console.log(
+    `${COMMIT ? "Seeding" : "Dry run for"} ${PROJECT_ID}/${DATASET}` +
+      `${OVERWRITE ? " (overwriting existing documents)" : ""}\n`
+  );
+  await seedProducts();
+  await seedContent();
+  if (!COMMIT) console.log("\nRe-run with --commit to write to Sanity.");
 }
 
 run().catch((err) => {

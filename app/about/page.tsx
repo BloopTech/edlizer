@@ -3,7 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Award, Heart, Sparkles, ShieldCheck, ArrowRight } from "lucide-react";
 import { siteAssets } from "@/lib/assets";
-import { siteDetails } from "@/lib/site";
+import { getSiteContent } from "@/sanity/content";
 import { brandCounts, edlizerProducts } from "@/lib/products";
 
 export const metadata: Metadata = {
@@ -33,7 +33,8 @@ const PILLARS = [
   },
 ];
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  const { details: siteDetails } = await getSiteContent();
   const departmentCount = new Set(
     edlizerProducts.flatMap((p) => p.categories ?? [p.category])
   ).size;

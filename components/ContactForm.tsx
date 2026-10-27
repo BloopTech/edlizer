@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { Send, Check, AlertCircle } from "lucide-react";
-import { siteDetails } from "@/lib/site";
+import { useSiteContent } from "@/components/SiteContentProvider";
 
 const SUBJECTS = [
   "Product enquiry",
@@ -22,6 +22,7 @@ type Status = "idle" | "sending" | "sent" | "error";
  * the body of `handleSubmit` only.
  */
 export const ContactForm: React.FC = () => {
+  const { details: siteDetails } = useSiteContent();
   const [status, setStatus] = useState<Status>("idle");
   const [form, setForm] = useState({
     name: "",

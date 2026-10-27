@@ -1,0 +1,115 @@
+{
+  "details": {
+    "phones": ["055 036 2752", "055 964 0640"],
+    "email": "edlizerbeauty@gmail.com",
+    "hours": {
+      "days": "Mondays – Saturdays",
+      "time": "9:00 AM – 8:00 PM",
+      "note": "Closed Sundays and public holidays"
+    },
+    "location": {
+      "city": "Accra",
+      "country": "Ghana",
+      "delivery": "Express Accra dispatch and nationwide delivery across Ghana"
+    },
+    "social": {
+      "instagram": {
+        "handle": "@edlizer_beauty_outlet",
+        "url": "https://www.instagram.com/edlizer_beauty_outlet"
+      },
+      "tiktok": {
+        "handle": "@edlizer_beauty_outlet",
+        "url": "https://www.tiktok.com/@edlizer_beauty_outlet"
+      }
+    }
+  },
+  "hero": {
+    "slides": [
+      {
+        "src": "/assets/hero/hero-model.jpg",
+        "alt": "Edlizer Beauty campaign portrait — model wearing a weightless full-coverage foundation",
+        "kicker": "Ghana's premier beauty house",
+        "lead": "Beauty On",
+        "accent": "Your Terms"
+      },
+      {
+        "src": "/assets/hero/hero-afro-glow.jpg",
+        "alt": "Edlizer Beauty campaign portrait — luminous complexion with sculptural gold earrings",
+        "kicker": "100% genuine, always",
+        "lead": "Real Products.",
+        "accent": "Real Results."
+      },
+      {
+        "src": "/assets/hero/hero-gold-couture.jpg",
+        "alt": "Edlizer Beauty campaign portrait — gold couture and graphic liner",
+        "kicker": "Ivory to Ebony Dark",
+        "lead": "Your Shade",
+        "accent": "Exists Here"
+      }
+    ],
+    "body": "We empower you to express yourself freely and be whoever you want to be. Unleash your inner beauty with our wide range of authentic cosmetics and clinical skincare sourced straight from renowned global houses.",
+    "primaryCta": { "label": "Shop Cosmetics", "href": "#featured-products" },
+    "secondaryCta": { "label": "Skincare Highlights", "href": "#skincare-highlights" },
+    "pillars": [
+      {
+        "title": "Genuine Quality Products",
+        "copy": "We source products straight from renowned international brands. Genuine products you can trust."
+      },
+      {
+        "title": "Inclusive Beauty",
+        "copy": "We believe beauty is for everyone, regardless of age, gender, or skin tone."
+      },
+      {
+        "title": "Personalized Solutions",
+        "copy": "Beauty is personal. We offer solutions tailored to your unique needs and preferences."
+      }
+    ]
+  },
+  "testimonials": [
+    {
+      "author": "Marilyn",
+      "role": "Verified Beauty Enthusiast • Accra",
+      "quote": "Edlizer is a one-stop shop for me. I get everything from skincare to makeup in one place. It saves me so much time and hassle."
+    },
+    {
+      "author": "Maame",
+      "role": "Loyal Client • Kumasi",
+      "quote": "I am quite particular about shopping online, So when I tried out Edlizer and realized how quality her products were, I never shop anywhere else."
+    }
+  ],
+  "gallery": [
+    { "url": "/assets/products/nars-radiant-foundation/1.jpg", "title": "NARS Radiant Foundation", "tag": "@edlizer_beauty_outlet" },
+    { "url": "/assets/products/beauty-creations-setting-powder/1.jpg", "title": "Bye Filter Setting Powder", "tag": "NARS & Fenty Glow" },
+    { "url": "/assets/products/good-molecules-discoloration-serum/1.webp", "title": "Discoloration Correcting Serum", "tag": "Good Molecules Serum" },
+    { "url": "/assets/products/studio-london-brush-set/1.png", "title": "Ultimate Brush Collection", "tag": "Vanity Essentials" },
+    { "url": "/assets/products/nyx-lip-lingerie-ruffle-trim/1.webp", "title": "Lip Lingerie Liquid Lipstick", "tag": "Setting Powder Magic" },
+    { "url": "/assets/products/simple-soothing-facial-toner/1.jpg", "title": "Soothing Facial Toner", "tag": "Hydration Ritual" },
+    { "url": "/assets/products/nickak-4in1-lip-kit/1.webp", "title": "NicKak 4in1 Lip Kit", "tag": "Plump & Nourish" },
+    { "url": "/assets/products/cosrx-aloe-suncream/1.jpg", "title": "Aloe Soothing Sun Cream", "tag": "Simple Toner Gentle Care" },
+    { "url": "/assets/products/ginseng-essence-water/1.jpg", "title": "Ginseng Essence Water", "tag": "Skin Barrier Restored" },
+    { "url": "/assets/products/good-molecules-clarify-cleanse-bar/1.jpeg", "title": "Clarify & Cleanse Bar", "tag": "#BeWhoeverYouWant" }
+  ],
+  "delivery": [
+    { "id": "accra", "label": "Accra express", "note": "Dispatched today, delivered within 24 hours", "fee": 30 },
+    { "id": "nationwide", "label": "Nationwide", "note": "Two to three working days anywhere in Ghana", "fee": 60 },
+    { "id": "pickup", "label": "Collect in store", "note": "Mondays – Saturdays, 9:00 AM – 8:00 PM", "fee": 0 }
+  ],
+  "faqs": [
+    {
+      "q": "How long does delivery take?",
+      "a": "Accra orders are dispatched the same working day and usually arrive within 24 hours. Elsewhere in Ghana, allow two to three working days."
+    },
+    {
+      "q": "Can you help me find my foundation shade?",
+      "a": "Yes — message us on WhatsApp with a photo of your face in natural daylight (no filter) and the shade you currently wear in any other brand. We will match you against what is in stock."
+    },
+    {
+      "q": "Are your products authentic?",
+      "a": "Every item is sourced directly from the brand or its authorised distributor and batch-verified before it reaches our shelves. If anything is ever found not to be genuine, we replace it or refund you in full."
+    },
+    {
+      "q": "Do you take returns?",
+      "a": "Unopened items in original packaging can be returned within seven days. For hygiene reasons opened cosmetics cannot be returned unless the product is faulty."
+    }
+  ]
+}

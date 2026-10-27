@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { AuthProvider } from "@/context/AuthContext";
 import { StoreShell } from "@/components/StoreShell";
+import { SiteContentProvider } from "@/components/SiteContentProvider";
+import { getSiteContent } from "@/sanity/content";
 
 export const metadata: Metadata = {
   title: "EDLIZER BEAUTY | Beauty On Your Terms — Ghana's Premier Beauty Outlet",
@@ -9,11 +11,13 @@ export const metadata: Metadata = {
     "We empower you to express yourself freely and be whoever you want to be. Unleash your inner beauty with 100% genuine cosmetics and clinical skincare.",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const content = await getSiteContent();
+
   return (
     <html lang="en" className="h-full antialiased scroll-smooth">
       <head>
@@ -24,11 +28,13 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-full flex flex-col font-sans bg-[#ffffff] text-[#201c17]">
-        <AuthProvider>
-          {/* Navigation, footer, bag, search and every overlay live in the shell
-              so each route shares one instance of them. */}
-          <StoreShell>{children}</StoreShell>
-        </AuthProvider>
+        <SiteContentProvider content={content}>
+          <AuthProvider>
+            {/* Navigation, footer, bag, search and every overlay live in the shell
+                so each route shares one instance of them. */}
+            <StoreShell>{children}</StoreShell>
+          </AuthProvider>
+        </SiteContentProvider>
       </body>
     </html>
   );
